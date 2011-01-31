@@ -172,3 +172,31 @@ function disable_plugins($key, $dbs)
 	$dbs->query($sql_del);
 	$_SESSION['plugins_enabled'] = $enplugins;
 }
+
+function variable_set($name, $value)
+{
+	global $conf;
+	global $dbs;
+
+	$query = sprintf("INSERT INTO `plugins_vars` (`name`, `value`) VALUES ('%s', '%s')", $name, $value);
+	$dbs->query($query);
+
+	$conf[$name] = $value;
+}
+
+function variable_del($name)
+{
+	global $conf;
+	global $dbs;
+	
+	$query = sprintf("DELETE FROM `plugins_vars` WHERE name = '%s'", $name, $value);
+
+	unset($conf[$name]);
+}
+
+function variable_get($name, $default = NULL)
+{
+  global $conf;
+
+  return isset($conf[$name]) ? $conf[$name] : $default;
+}
