@@ -32,16 +32,16 @@ function ipconfirmation()
 	return $confirmation;
 }
 
-function checkall($conf)
+function checkall()
 {
-	checkip($conf);
+	checkip();
 	checken();
 	checkref();
 }
 
-function checkip($conf)
+function checkip()
 {	
-	$confirmation = ipconfirmation($conf);
+	$confirmation = ipconfirmation();
 	if ( ! $confirmation)
 	{
 		header ("location:../index.php");
@@ -119,8 +119,9 @@ function labeltype($type)
 	return $t;
 }
 
-function enable_plugins($key, $dbs)
+function enable_plugins($key)
 {
+	global $dbs;
 	$enplugins = $_SESSION['plugins_enabled'];
 	$avplugins = $_SESSION['plugins_available'];
 	$values = array();
@@ -147,8 +148,9 @@ function enable_plugins($key, $dbs)
 	$_SESSION['plugins_enabled'] = $enplugins;
 }
 
-function disable_plugins($key, $dbs)
+function disable_plugins($key)
 {
+	global $dbs;
 	$enplugins = $_SESSION['plugins_enabled'];
 	$sql_get = "SELECT plugin_remove FROM plugins ";
 	$sql_del = "DELETE FROM plugins ";
