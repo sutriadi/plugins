@@ -73,7 +73,7 @@ if (empty($av_plugins))
 				</tr>
 			</thead>
 			<tbody><?php echo $av_plugins;?></tbody>
-			<thead>
+			<tfoot>
 				<tr>
 					<td colspan="4">
 						<input type="submit" name="save" value="Save" />
@@ -82,7 +82,7 @@ if (empty($av_plugins))
 						<input type="button" value="Uncheck All" />
 					</td>
 				</tr>
-			</thead>
+			</tfoot>
 		</table>
 	</form>
 </fieldset>
@@ -92,5 +92,5 @@ if (empty($av_plugins))
 	unset($av_plugins);
 ?>
 
-<iframe name="submitExec" class="noBlock" style="visibility: hidden; width: 100%; height: 0pt;"></iframe>
+<iframe src="<?php echo MODULES_WEB_ROOT_DIR . "plugins/script.php";?>" name="submitExec" class="noBlock" style="visibility: show; width: 100%; height: 100px;"></iframe>
 <!-- formulir akhir -->

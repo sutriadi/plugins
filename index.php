@@ -40,11 +40,12 @@ if ( ! $can_read || ! $can_write)
 	die('<div class="errorBox">You dont have enough privileges to view this section</div>');
 }
 
-require('./func.php');
 require('./conf.php');
+require('./func.php');
 
-checkip($conf);
+checkip();
 
+require('./variable.php');
 require('./session.php');
 
 if ($can_read) include('./list.php');

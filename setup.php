@@ -40,7 +40,7 @@ if (!$can_read) {
 require('./func.php');
 require('./conf.php');
 
-checkip($conf);
+checkip();
 
 if ( ! isset($_SESSION['plugins_enabled']))
 	$_SESSION['plugins_enabled'] = array();
@@ -68,8 +68,8 @@ if ($_POST) {
 
 	$json = json_encode($_POST);
 
-	if (count($to_enable) != 0) enable_plugins($to_enable, $dbs);
-	if (count($to_disable) != 0) $body = disable_plugins($to_disable, $dbs);
+	if (count($to_enable) != 0) enable_plugins($to_enable);
+	if (count($to_disable) != 0) $body = disable_plugins($to_disable);
 
 	echo "<html><head><script type=\"text/javascript\">window.parent.location.href = \"../../index.php?mod=plugins\";</script></head><body>$body</body></html>";
 	exit();
