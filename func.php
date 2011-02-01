@@ -20,8 +20,9 @@
  *      MA 02110-1301, USA.
  */
 
-function ipconfirmation($conf)
+function ipconfirmation()
 {
+	global $conf;
 	extract($conf);
 	foreach ($allowed_ip as $ip) {
 		if ($ip == $remote_addr) {
