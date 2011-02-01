@@ -59,9 +59,9 @@ if (empty($av_plugins))
 				<tr>
 					<td colspan="5">
 						<input type="submit" name="save" value="Save" />
-						<input type="button" value="Check All" />
-						<input type="button" value="Check Invert" />
-						<input type="button" value="Uncheck All" />
+						<input type="button" value="Check All" onclick="submitExec.checkall(this.form);" />
+						<input type="button" value="Check Invert" onclick="submitExec.checkinvert(this.form);" />
+						<input type="button" value="Uncheck All" onclick="submitExec.uncheckall(this.form);" />
 					</td>
 				</tr>
 				<tr align="left" style="background: gray; color: white;">
@@ -77,9 +77,9 @@ if (empty($av_plugins))
 				<tr>
 					<td colspan="4">
 						<input type="submit" name="save" value="Save" />
-						<input type="button" value="Check All" />
-						<input type="button" value="Check Invert" />
-						<input type="button" value="Uncheck All" />
+						<input type="button" value="Check All" onclick="submitExec.checkall(this.form);" />
+						<input type="button" value="Check Invert" onclick="submitExec.checkinvert(this.form);" />
+						<input type="button" value="Uncheck All" onclick="submitExec.uncheckall(this.form);" />
 					</td>
 				</tr>
 			</tfoot>
@@ -92,5 +92,5 @@ if (empty($av_plugins))
 	unset($av_plugins);
 ?>
 
-<iframe src="<?php echo MODULES_WEB_ROOT_DIR . "plugins/script.php";?>" name="submitExec" class="noBlock" style="visibility: show; width: 100%; height: 100px;"></iframe>
+<iframe src="<?php echo MODULES_WEB_ROOT_DIR . "plugins/script.php";?>" name="submitExec" class="noBlock" style="visibility: hidden; width: 100%; height: 0;"></iframe>
 <!-- formulir akhir -->

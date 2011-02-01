@@ -41,6 +41,7 @@ require('./func.php');
 require('./conf.php');
 
 checkip();
+checkref();
 
 if ( ! isset($_SESSION['plugins_enabled']))
 	$_SESSION['plugins_enabled'] = array();

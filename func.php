@@ -50,7 +50,7 @@ function checkip()
 
 function checkref()
 {
-	if ( ! $_SERVER['HTTP_REFERER'])
+	if ( ! isset($_SERVER['HTTP_REFERER']))
 		$ref = false;
 	else
 	{
