@@ -65,13 +65,15 @@ if (empty($en_plugins))
 ?>
 
 <!-- informasi mulai -->
-<fieldset>
-	<legend><strong>Informasi Umum</strong></legend>
+<fieldset class="menuBox" style="font-weight: normal;">
+	<div style="padding: 3px; padding-left: 59px; background: url(<?php echo MODULES_WEB_ROOT_DIR;?>/plugins/plugins.png) no-repeat -10px 5px;">
+		<strong>Plugins - Informasi Umum</strong>
+		<hr />
 		Anda mengakses halaman plugin dari IP: <strong><?php echo $conf['remote_addr'];?></strong>.
-		Halaman ini bisa diakses dari alamat IP berikut ini: <strong><?php echo implode(', ', $conf['allowed_ip']);?></strong>
+		Halaman ini bisa diakses dari alamat IP berikut: <strong><?php echo implode(', ', $conf['allowed_ip']);?></strong>
+	</div>
 </fieldset>
 <!-- informasi akhir -->
-
 <!-- formulir mulai -->
 <fieldset>
 	<legend><strong>Daftar Plugin Aktif</strong></legend>

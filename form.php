@@ -66,7 +66,7 @@ if (empty($av_plugins))
 				</tr>
 				<tr align="left" style="background: gray; color: white;">
 					<th width="50px">Enabled</th>
-					<th width="200px">Name</th>
+					<th width="100px">Name</th>
 					<th width="50px">Version</th>
 					<th width="50px">Type</th>
 					<th>Description</th>
