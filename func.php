@@ -128,10 +128,14 @@ function enable_plugins($key)
 	foreach ($key as $k)
 	{
 		$plugin_remove = $avplugins[$k]['plugin_remove'];
-		if ($plugin_remove != null AND ! empty($plugin_remove) AND file_exists($k.'/'.$plugin_remove))
-			$avplugins[$k]['plugin_remove'] = readfile($k.'/'.$plugin_remove);
-		else
+		$plugin_install = $avplugins[$k]['plugin_install'];
+		if ($plugin_remove == null OR empty($plugin_remove) OR ! file_exists($plugin_remove))
 			$avplugins[$k]['plugin_remove'] = '';
+		
+		if ($plugin_install == null OR empty($plugin_install) OR ! file_exists($plugin_install))
+			$avplugins[$k]['plugin_install'] = '';
+		else
+			require($plugin_install);
 		
 		$cols = ! isset($cols) ? implode(",", array_keys($avplugins[$k])) : $cols;
 		$vals = array();
@@ -168,9 +172,10 @@ function disable_plugins($key)
 	{
 		$arrays = array();
 		while ($array = $get->fetch_assoc())
-			$arrays[] = $array['plugin_remove'];
-
-		$sql_del .= "; " . implode('', $arrays);
+		{
+			$plugin_remove = $array['plugin_remove'];
+			require($plugin_remove);
+		}
 	}
 	$dbs->query($sql_del);
 	$_SESSION['plugins_enabled'] = $enplugins;
@@ -193,6 +198,7 @@ function variable_del($name)
 	global $dbs;
 	
 	$query = sprintf("DELETE FROM `plugins_vars` WHERE name = '%s'", $name, $value);
+	$dbs->query($query);
 
 	unset($conf[$name]);
 }

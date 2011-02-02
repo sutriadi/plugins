@@ -72,8 +72,8 @@ foreach ($plugins as $plugin)
 			'plugin_version' => ! isset($info['version']) ? 'Unversion' : $info['version'],
 			'plugin_description' => ! isset($info['description']) ? 'Undescription' : $info['description'],
 			'plugin_type' => ! isset($info['type']) ? 0 : $info['type'],
-			'plugin_install' => ! isset($info['install']) ? null : $info['install'],
-			'plugin_remove' => ! isset($info['remove']) ? null : $info['remove'],
+			'plugin_install' => ! isset($info['install']) ? null : $plugin . '/' . $info['install'] . '.php' ,
+			'plugin_remove' => ! isset($info['remove']) ? null : $plugin . '/' . $info['remove'] . '.php' ,
 			'plugin_deps' => ! isset($info['deps']) ? null : $info['deps'],
 		);
 		$avplugins = array_merge($avplugins, array($plugin => $thisplugin));
