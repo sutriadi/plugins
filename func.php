@@ -186,10 +186,16 @@ function variable_set($name, $value)
 	global $conf;
 	global $dbs;
 
-	$query = sprintf("INSERT INTO `plugins_vars` (`name`, `value`) VALUES ('%s', '%s')", $name, $value);
+	$query = sprintf("SELECT `name` FROM `plugins_vars` WHERE `name`='%s'", $name);
+	$rows = $dbs->query($query);
+	if ($rows->num_rows != 0)
+		$query = sprintf("UPDATE `plugins_vars` SET `value`='%s' WHERE `name`='%s'", $value, $name);
+	else
+		$query = sprintf("INSERT INTO `plugins_vars` (`name`, `value`) VALUES ('%s', '%s')", $name, $value);
 	$dbs->query($query);
 
 	$conf[$name] = $value;
+	$_SESSION['plugins_conf'] = $conf;
 }
 
 function variable_del($name)
@@ -197,10 +203,11 @@ function variable_del($name)
 	global $conf;
 	global $dbs;
 	
-	$query = sprintf("DELETE FROM `plugins_vars` WHERE name = '%s'", $name, $value);
+	$query = sprintf("DELETE FROM `plugins_vars` WHERE name = '%s'", $name);
 	$dbs->query($query);
 
 	unset($conf[$name]);
+	$_SESSION['plugins_conf'] = $conf;
 }
 
 function variable_get($name, $default = NULL)

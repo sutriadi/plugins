@@ -20,6 +20,6 @@
  *      MA 02110-1301, USA.
  */
 
-$conf['allowed_ip'] = array('127.0.0.1', '::1');
+$conf['allowed_ip'] = array('127.0.0.1', '::1', '192.168.56.101');
 $conf['remote_addr'] = $_SERVER['REMOTE_ADDR'];
 $conf['confirmation'] = 0;
