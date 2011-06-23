@@ -181,10 +181,23 @@ function disable_plugins($key)
 	$_SESSION['plugins_enabled'] = $enplugins;
 }
 
-function variable_set($name, $value)
+function variable_set($name, $value, $method='none')
 {
 	global $conf;
 	global $dbs;
+	
+	switch ($method)
+	{
+		case "json":
+			if ($conf['php_version'] >= "5.3") 
+				$value = json_encode($value, JSON_FORCE_OBJECT));
+			else
+				$value = json_encode($value);
+			break;
+		case "none":
+		default:
+			$value = $value;
+	}
 
 	$query = sprintf("SELECT `name` FROM `plugins_vars` WHERE `name`='%s'", $name);
 	$rows = $dbs->query($query);

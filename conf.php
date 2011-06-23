@@ -23,3 +23,4 @@
 $conf['allowed_ip'] = array('127.0.0.1', '::1', '192.168.56.101');
 $conf['remote_addr'] = $_SERVER['REMOTE_ADDR'];
 $conf['confirmation'] = 0;
+$conf['php_version'] = substr(PHP_VERSION, 0, 5);
