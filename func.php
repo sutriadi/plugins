@@ -190,7 +190,7 @@ function variable_set($name, $value, $method='none')
 	{
 		case "json":
 			if ($conf['php_version'] >= "5.3") 
-				$value = json_encode($value, JSON_FORCE_OBJECT));
+				$value = json_encode($value, JSON_FORCE_OBJECT);
 			else
 				$value = json_encode($value);
 			break;
