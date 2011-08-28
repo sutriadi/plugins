@@ -2,7 +2,7 @@
 /*
  *      list.php
  *      
- *      Copyright 2011 Indra Sutriadi Pipii <indra.sutriadi@gmail.com>
+ *      Copyright 2011 Indra Sutriadi Pipii <indra@sutriadi.web.id>
  *      
  *      This program is free software; you can redistribute it and/or modify
  *      it under the terms of the GNU General Public License as published by
@@ -38,10 +38,10 @@ foreach ($enplugins as $plugin => $info)
 		switch ($info['plugin_type'])
 		{
 			case 1:
-				$on = "href=\"". MODULES_WEB_ROOT_DIR . 'plugins/' . $plugin . "\"";
+				$on = "onclick=\"$('#mainContent').simbioAJAX('". MODULES_WEB_ROOT_DIR . "plugins/include/" . $plugin . "\"";
 				break;
 			case 2:
-				$on = "onclick=\"window.open('" . MODULES_WEB_ROOT_DIR . 'plugins/' . $plugin . "', '$plugin');\" href=\"\"";
+				$on = "onclick=\"window.open('" . MODULES_WEB_ROOT_DIR . 'plugins/include/' . $plugin . "', '$plugin'); return false;\" href=\"#\"";
 				break;
 			case 0:
 			default:
@@ -53,36 +53,36 @@ foreach ($enplugins as $plugin => $info)
 				."<td>"
 					.labeltype($info['plugin_type'])
 				."</td>"
-				."<td><a $on>Launch</a></td>"
+				."<td><input type=\"button\" value=\"Launch\" $on /></td>"
 			."</tr>";
 		$row++;
 	}
 }
 
 if (empty($en_plugins))
-	$en_plugins = '<tr align="center"><td colspan="4">Tidak ada plugin aktif</td></tr>';
+	$en_plugins = '<tr align="center"><td colspan="4">' . __('No plugins enabled!') . '</td></tr>';
 
 ?>
 
 <!-- informasi mulai -->
 <fieldset class="menuBox" style="font-weight: normal;">
-	<div style="padding: 3px; padding-left: 59px; background: url(<?php echo MODULES_WEB_ROOT_DIR;?>/plugins/plugins.png) no-repeat -10px 5px;">
-		<strong>Plugins - Informasi Umum</strong>
+	<div style="padding: 3px; padding-left: 59px; background: url(<?php echo MODULES_WEB_ROOT_DIR;?>/plugins/logo.png) no-repeat -10px 5px;">
+		<strong>Plugins - <?php echo __('General Information');?></strong>
 		<hr />
-		Anda mengakses halaman plugin dari IP: <strong><?php echo $conf['remote_addr'];?></strong>.
-		Halaman ini bisa diakses dari alamat IP berikut: <strong><?php echo implode(', ', $conf['allowed_ip']);?></strong>
+		<?php echo __('You access this page from IP address');?>: <strong><?php echo remote_addr();?></strong>.
+		<?php echo __('This page can accessed from following IP addresses');?>: <strong><?php echo implode(', ', json_decode(variable_get('allowed_ip', '["127.0.0.1", "::1"]'), true));?></strong>
 	</div>
 </fieldset>
 <!-- informasi akhir -->
 <!-- formulir mulai -->
 <fieldset>
-	<legend><strong>Daftar Plugin Aktif</strong></legend>
+	<legend><strong><?php echo __('Enabled Plugins List');?></strong></legend>
 	<table width="100%" cellspacing="0" cellpadding="5" style="text-align: left;">
 		<tr style="background: gray; color: white;">
-			<th>Name</th>
-			<th>Version</th>
-			<th>Type</th>
-			<th>Action</th>
+			<th><?php echo __('Name');?></th>
+			<th><?php echo __('Version');?></th>
+			<th><?php echo __('Type');?></th>
+			<th><?php echo __('Action');?></th>
 		</tr>
 		<?php echo $en_plugins;?>
 	</table>

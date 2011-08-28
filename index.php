@@ -2,7 +2,7 @@
 /*
  *      index.php
  *      
- *      Copyright 2011 Indra Sutriadi Pipii <indra.sutriadi@gmail.com>
+ *      Copyright 2011 Indra Sutriadi Pipii <indra@sutriadi.web.id>
  *      
  *      This program is free software; you can redistribute it and/or modify
  *      it under the terms of the GNU General Public License as published by
@@ -20,6 +20,9 @@
  *      MA 02110-1301, USA.
  */
 
+// key to authenticate
+define('INDEX_AUTH', '1');
+
 if (!defined('SENAYAN_BASE_DIR')) {
     // main system configuration
     require '../../../sysconfig.inc.php';
@@ -29,7 +32,7 @@ if (!defined('SENAYAN_BASE_DIR')) {
 
 define('MODPLUGINS_WEB_ROOT_DIR', MODULES_WEB_ROOT_DIR . 'plugins/');
 
-require SENAYAN_BASE_DIR.'admin/default/session_check.inc.php';
+require SENAYAN_BASE_DIR . 'admin/default/session_check.inc.php';
 
 // privileges checking
 $can_read = utility::havePrivilege('plugins', 'r');
@@ -40,12 +43,16 @@ if ( ! $can_read || ! $can_write)
 	die('<div class="errorBox">You dont have enough privileges to view this section</div>');
 }
 
-require('./conf.php');
+if ( ! isset($conf))
+	$conf = array();
+
 require('./func.php');
+require('./variable.php');
+
+checksess();
 
 checkip();
 
-require('./variable.php');
 require('./session.php');
 
 if ($can_read) include('./list.php');

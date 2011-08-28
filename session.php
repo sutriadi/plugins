@@ -2,7 +2,7 @@
 /*
  *      session.php
  *      
- *      Copyright 2011 Indra Sutriadi Pipii <indra.sutriadi@gmail.com>
+ *      Copyright 2011 Indra Sutriadi Pipii <indra@sutriadi.web.id>
  *      
  *      This program is free software; you can redistribute it and/or modify
  *      it under the terms of the GNU General Public License as published by
@@ -49,7 +49,7 @@ if (isset($query->num_rows) && $query->num_rows > 0)
 	$enplugins = array_merge($enplugins, $arrays);
 }
 
-$thisdir = ".";
+$thisdir = "./include";
 $plugins = scandir($thisdir);
 sort($plugins);
 $options = '';
@@ -72,8 +72,8 @@ foreach ($plugins as $plugin)
 			'plugin_version' => ! isset($info['version']) ? 'Unversion' : $info['version'],
 			'plugin_description' => ! isset($info['description']) ? 'Undescription' : $info['description'],
 			'plugin_type' => ! isset($info['type']) ? 0 : $info['type'],
-			'plugin_install' => ! isset($info['install']) ? null : $plugin . '/' . $info['install'] . '.php' ,
-			'plugin_remove' => ! isset($info['remove']) ? null : $plugin . '/' . $info['remove'] . '.php' ,
+			'plugin_install' => ! isset($info['install']) ? null : $plugdir . '/' . $info['install'] . '.php' ,
+			'plugin_remove' => ! isset($info['remove']) ? null : $plugdir . '/' . $info['remove'] . '.php' ,
 			'plugin_deps' => ! isset($info['deps']) ? null : $info['deps'],
 		);
 		$avplugins = array_merge($avplugins, array($plugin => $thisplugin));

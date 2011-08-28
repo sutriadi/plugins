@@ -34,5 +34,3 @@ if ($pvquery->num_rows > 0)
 		$conf[$pvrow['name']] = $pvrow['value'];
 	}
 }
-
-$_SESSION['plugins_conf'] = $conf;

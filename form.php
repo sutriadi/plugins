@@ -35,7 +35,7 @@ foreach ($avplugins as $plugin => $info)
 	$trfg = $fgtr[$row % 2];
 	$av_plugins .= "<tr id =\"tr_$plugin\" style=\"background: $trbg; color: $trfg\">"
 			."<td align=\"center\"><input type=\"checkbox\" $checked id=\"ch_$plugin\" name=\"$plugin\" /></td>"
-			."<td><label for=\"ch_$plugin\"><strong>{$info['plugin_name']}</strong></label></td>"
+			."<td><label for=\"ch_$plugin\" style=\"cursor: pointer; cursor: hand;\"><strong>{$info['plugin_name']}</strong></label></td>"
 			."<td>{$info['plugin_version']}</td>"
 			."<td>"
 				.labeltype($info['plugin_type'])
@@ -52,7 +52,7 @@ if (empty($av_plugins))
 
 <!-- formulir mulai -->
 <fieldset>
-	<legend><strong>Daftar Plugin Tersedia</strong></legend>
+	<legend><strong><?php echo __('Available Plugins');?></strong></legend>
 	<form name="mainForm" id="mainForm" method="POST" action="<?php echo MODULES_WEB_ROOT_DIR . "plugins/setup.php";?>" target="submitExec">
 		<table width="100%" cellpadding="5" cellspacing="0" style="border-collapsed: collapsed;">
 			<thead style="border: 2px solid gray;">
@@ -65,11 +65,11 @@ if (empty($av_plugins))
 					</td>
 				</tr>
 				<tr align="left" style="background: gray; color: white;">
-					<th width="50px">Enabled</th>
-					<th width="100px">Name</th>
-					<th width="50px">Version</th>
-					<th width="50px">Type</th>
-					<th>Description</th>
+					<th width="50px"><?php echo __('Enabled');?></th>
+					<th width="100px"><?php echo __('Name');?></th>
+					<th width="50px"><?php echo __('Version');?></th>
+					<th width="50px"><?php echo __('Type');?></th>
+					<th><?php echo __('Description');?></th>
 				</tr>
 			</thead>
 			<tbody><?php echo $av_plugins;?></tbody>
@@ -92,5 +92,5 @@ if (empty($av_plugins))
 	unset($av_plugins);
 ?>
 
-<iframe src="<?php echo MODULES_WEB_ROOT_DIR . "plugins/script.php";?>" name="submitExec" class="noBlock" style="visibility: hidden; width: 100%; height: 0;"></iframe>
+<iframe src="<?php echo MODULES_WEB_ROOT_DIR . "plugins/script.php";?>" name="submitExec" class="noBlock" style="visibility: visible; width: 100%; "></iframe>
 <!-- formulir akhir -->

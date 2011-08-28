@@ -2,7 +2,7 @@
 /*
  *      setup.php
  *      
- *      Copyright 2011 Indra Sutriadi Pipii <indra.sutriadi@gmail.com>
+ *      Copyright 2011 Indra Sutriadi Pipii <indra@sutriadi.web.id>
  *      
  *      This program is free software; you can redistribute it and/or modify
  *      it under the terms of the GNU General Public License as published by
@@ -19,6 +19,9 @@
  *      Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  *      MA 02110-1301, USA.
  */
+
+// key to authenticate
+define('INDEX_AUTH', '1');
 
 if (!defined('SENAYAN_BASE_DIR')) {
     // main system configuration
@@ -38,7 +41,6 @@ if (!$can_read) {
 }
 
 require('./func.php');
-require('./conf.php');
 
 checkip();
 checkref();
