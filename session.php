@@ -70,6 +70,7 @@ foreach ($plugins as $plugin)
 			'plugin_name' => ! isset($info['name']) ? 'Untitled' : $info['name'],
 			'plugin_author' => ! isset($info['author']) ? 'Unknown' : $info['author'],
 			'plugin_version' => ! isset($info['version']) ? 'Unversion' : $info['version'],
+			'plugin_build' => ! isset($info['build']) ? '0' : $info['build'],
 			'plugin_description' => ! isset($info['description']) ? 'Undescription' : $info['description'],
 			'plugin_type' => ! isset($info['type']) ? 0 : $info['type'],
 			'plugin_install' => ! isset($info['install']) ? null : $plugdir . '/' . $info['install'] . '.php' ,

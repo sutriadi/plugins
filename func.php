@@ -318,31 +318,34 @@ function enable_plugins($key)
 	$enplugins = $_SESSION['plugins_enabled'];
 	$avplugins = $_SESSION['plugins_available'];
 	$values = array();
-	foreach ($key as $k)
+	if (count($key) > 0)
 	{
-		$plugin_remove = $avplugins[$k]['plugin_remove'];
-		$plugin_install = $avplugins[$k]['plugin_install'];
-		if ($plugin_remove == null OR empty($plugin_remove) OR ! file_exists($plugin_remove))
-			$avplugins[$k]['plugin_remove'] = '';
-		
-		if ($plugin_install == null OR empty($plugin_install) OR ! file_exists($plugin_install))
-			$avplugins[$k]['plugin_install'] = '';
-		else
-			require($plugin_install);
-		
-		$cols = ! isset($cols) ? implode(",", array_keys($avplugins[$k])) : $cols;
-		$vals = array();
-		foreach ($avplugins[$k] as $col => $val)
+		foreach ($key as $k)
 		{
-			$vals[] = sprintf("'%s'", $val);
+			$plugin_remove = $avplugins[$k]['plugin_remove'];
+			$plugin_install = $avplugins[$k]['plugin_install'];
+			if ($plugin_remove == null OR empty($plugin_remove) OR ! file_exists($plugin_remove))
+				$avplugins[$k]['plugin_remove'] = '';
+			
+			if ($plugin_install == null OR empty($plugin_install) OR ! file_exists($plugin_install))
+				$avplugins[$k]['plugin_install'] = '';
+			else
+				require($plugin_install);
+			
+			$cols = ! isset($cols) ? implode(",", array_keys($avplugins[$k])) : $cols;
+			$vals = array();
+			foreach ($avplugins[$k] as $col => $val)
+			{
+				$vals[] = sprintf("'%s'", $val);
+			}
+			$values[] = "(" . implode(", ", $vals) . ")";
+			$enplugins = array_merge($enplugins, array($k => $avplugins[$k]));
 		}
-		$values[] = "(" . implode(", ", $vals) . ")";
-		$enplugins = array_merge($enplugins, array($k => $avplugins[$k]));
+		$values = implode(", ", $values);
+		$sql_ins = "INSERT INTO plugins ($cols) VALUES $values";
+		$dbs->query($sql_ins);
+		$_SESSION['plugins_enabled'] = $enplugins;
 	}
-	$values = implode(", ", $values);
-	$sql_ins = "INSERT INTO plugins ($cols) VALUES $values";
-	$dbs->query($sql_ins);
-	$_SESSION['plugins_enabled'] = $enplugins;
 }
 
 /*
@@ -381,6 +384,27 @@ function disable_plugins($key)
 	}
 	$dbs->query($sql_del);
 	$_SESSION['plugins_enabled'] = $enplugins;
+}
+
+/*
+ * 
+ * name: plugin_get
+ * @param $plugin string
+ * @return $info array
+ */
+function plugin_get($plugin)
+{
+	global $dbs;
+	$sql = sprintf("SELECT * FROM `plugins` WHERE `plugin_id` = '%s'", $plugin);
+	$info = $dbs->query($sql);
+	if ($info->num_rows > 0)
+	{
+		return $info->fetch_assoc();
+	}
+	else
+	{
+		return array();
+	}
 }
 
 /*

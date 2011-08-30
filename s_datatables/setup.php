@@ -107,24 +107,37 @@ if ($_POST)
 								$post->table
 							);
 						}
-/*
-						echo $sql;
-						exit();
-*/
 						break;
 					case "add":
 					default:
 						$base_cols = (isset($post->base_cols)) ? json_encode($post->base_cols) : '';
 						$php_code = (isset($post->end_cols_php)) ? true : false;
 						$windowed = (isset($post->windowed)) ? true : false;
+/*
+						$exp = explode(chr(13), trim($post->end_cols));
+						foreach ($exp as $x)
+						{
+							$label = '';
+							$content = $x;
+							$del = explode(":", $x);
+							if (count($del) > 1)
+							{
+								$label = $del[0];
+								unset($del[0]);
+								$content = implode(":", $del);
+							}
+							echo "label: $label, content: $content<br />";
+						}
+						exit();
+*/
 						$sql = sprintf("UPDATE `plugins_dtables` "
 							. " SET `first_col` = '%s', `base_cols` = '%s', `end_cols` = '%s', `php_code` = %d, `add_code` = '%s', `windowed` = '%s' "
 							. " WHERE `table` = '%s'",
 							$post->first_col,
 							$base_cols,
-							$post->end_cols,
+							trim($post->end_cols),
 							$php_code,
-							$post->add_code,
+							trim($post->add_code),
 							$windowed,
 							$post->table
 						);

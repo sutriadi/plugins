@@ -53,46 +53,12 @@ if (isset($_GET) AND isset($_GET['cols']))
 	$base_cols_label = __('Base Columns');
 	if ($type == 'member')
 	{
-		$base_cols_name = array(
-			'member_id' => __('ID'), 'member_name' => __('Name'),
-			'gender' => __('Gender'), 'birth_date' => __('Birth Date'),
-			'member_type_id' => __('Type'), // to join table
-			'member_address' => __('Address'),
-			'member_mail_address' => __('Mail Address'), 'member_email' => __('E-Mail'),
-			'postal_code' => __('Zip Code'), 'inst_name' => __('Institution'),
-			'member_image' => __('Photo'), 'member_phone' => __('Phone'),
-			'member_fax' => __('Fax'), 'member_since_date' => __('Member Since'),
-			'register_date' => __('Register Date'), 'expire_date' => __('Expire Date'),
-			'member_notes' => __('Notes'), 'is_pending' => __('Pending Membership'),
-			'last_login' => __('Last Login'), 'last_login_ip' => __('Last Login From'),
-			'input_date' => __('Input Date'), 'last_update' => __('Last Update'),
-		);
+		$base_cols_name = base_cols_name('member');
 		$base_cols_label = __('Base Columns of Member');
 	}
 	else if ($type == 'biblio')
 	{
-		$base_cols_name = array(
-			'biblio_id' => __('ID'),
-			'gmd_id' => __('GMD'), // to join table
-			'title' => __('Title'),
-			'isbn_issn' => __('ISBN/ISSN'),
-			'edition' => __('Edition'),
-			'publisher_id' => __('Publisher'), // to join table
-			'publish_year' => __('Publishing Year'),
-			'collation' => __('Collation'),
-			'series_title' => __('Series Title'),
-			'call_number' => __('Call Number'),
-			'language_id' => __('Language'),
-			'publish_place_id' => __('Publishing Place'), // to join table
-			'classification' => __('Classification'),
-			'notes' => __('Abstract/Notes'),
-			'image' => __('Image'),
-			'spec_detail_info' => __('Specific Detail Info'),
-			'opac_hide' => __('Hide in Opac'),
-			'promoted' => __('Promote to Homepage'),
-			'input_date' => __('Input Date'),
-			'last_update' => __('Last Update'),
-		);
+		$base_cols_name = base_cols_name('biblio');
 		$base_cols_label = __('Base Columns of Bibliography');
 	}
 
@@ -272,7 +238,10 @@ if (isset($_GET) AND isset($_GET['cols']))
 			<td class="alterCell2">
 				<textarea id="end_cols" name="end_cols" rows="5" style="width: 100%;"><?php echo $end_cols;?></textarea>
 				<br />
-				<span><?php echo __('Additional columns at end of the table. Separate each other with newline.');?></span>
+				<span>
+					<?php echo __('Additional columns at end of the table. Separate each other with newline.');?>
+					<?php echo __('You can use format <strong>label</strong>: <strong>content</strong>.');?>
+				</span>
 			</td>
 		</tr>
 		<tr valign="top">
@@ -282,7 +251,10 @@ if (isset($_GET) AND isset($_GET['cols']))
 				<input type="checkbox" id="end_cols_php" name="end_cols_php" <?php echo $ch_cols_php;?> />
 					<label for="end_cols_php" style="cursor: pointer;"><?php echo __('Yes');?></label>
 				<br />
-				<span><?php echo __('Check it if your additional columns contain PHP code.');?></span>
+				<span>
+					<?php echo __('Check it if your additional columns contain PHP code.');?>
+					<?php echo __('Not implemented yet!');?>
+				</span>
 			</td>
 		</tr>
 		<tr valign="top">
@@ -291,7 +263,10 @@ if (isset($_GET) AND isset($_GET['cols']))
 			<td class="alterCell2">
 				<textarea id="add_code" name="add_code" rows="5" style="width: 100%;"><?php echo $add_code;?></textarea>
 				<br />
-				<span><?php echo __('Additional variables, functions or etc to handle your additional columns.');?></span>
+				<span>
+					<?php echo __('Additional variables, functions or etc to handle your additional columns.');?>
+					<?php echo __('Not implemented yet!');?>
+				</span>
 			</td>
 		</tr>
 		<tr valign="top">
@@ -301,7 +276,10 @@ if (isset($_GET) AND isset($_GET['cols']))
 				<input type="checkbox" id="windowed" name="windowed" <?php echo $windowed;?> />
 					<label for="windowed" style="cursor: pointer;"><?php echo __('Yes');?></label>
 				<br />
-				<span><?php echo __('Check it if this tables displayed on new window type plugin.');?></span>
+				<span>
+					<?php echo __('Check it if this tables displayed on new window type plugin.');?>
+					<?php echo __('Not implemented yet!');?>
+				</span>
 			</td>
 		</tr>
 <?php elseif ($cols == 'sort'): ?>
@@ -329,4 +307,4 @@ if (isset($_GET) AND isset($_GET['cols']))
 	</table>
 </form>
 <?php endif;?>
-<iframe name="submitExec" class="noBlock" style="visibility: hidden; width: 100%;"></iframe>
+<iframe name="submitExec" class="noBlock" style="visibility: visible; width: 100%;"></iframe>

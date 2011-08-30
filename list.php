@@ -50,8 +50,9 @@ foreach ($enplugins as $plugin => $info)
 		$en_plugins .= "<tr style=\"background: $trbg; color: $trfg\">"
 				."<td><label for=\"ch_$plugin\"><strong>{$info['plugin_name']}</strong></label></td>"
 				."<td>{$info['plugin_version']}</td>"
+				."<td>{$info['plugin_build']}</td>"
 				."<td>"
-					.labeltype($info['plugin_type'])
+					. labeltype($info['plugin_type'])
 				."</td>"
 				."<td><input type=\"button\" value=\"Launch\" $on /></td>"
 			."</tr>";
@@ -67,7 +68,7 @@ if (empty($en_plugins))
 <!-- informasi mulai -->
 <fieldset class="menuBox" style="font-weight: normal;">
 	<div style="padding: 3px; padding-left: 59px; background: url(<?php echo MODULES_WEB_ROOT_DIR;?>/plugins/logo.png) no-repeat -10px 5px;">
-		<strong>Plugins - <?php echo __('General Information');?></strong>
+		<strong><?php printf('%s - %s', __('Plugins'), __('General Informations'));?></strong>
 		<hr />
 		<?php echo __('You access this page from IP address');?>: <strong><?php echo remote_addr();?></strong>.
 		<?php echo __('This page can accessed from following IP addresses');?>: <strong><?php echo implode(', ', json_decode(variable_get('allowed_ip', '["127.0.0.1", "::1"]'), true));?></strong>
@@ -81,6 +82,7 @@ if (empty($en_plugins))
 		<tr style="background: gray; color: white;">
 			<th><?php echo __('Name');?></th>
 			<th><?php echo __('Version');?></th>
+			<th><?php echo __('Build');?></th>
 			<th><?php echo __('Type');?></th>
 			<th><?php echo __('Action');?></th>
 		</tr>

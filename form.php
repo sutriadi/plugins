@@ -37,6 +37,7 @@ foreach ($avplugins as $plugin => $info)
 			."<td align=\"center\"><input type=\"checkbox\" $checked id=\"ch_$plugin\" name=\"$plugin\" /></td>"
 			."<td><label for=\"ch_$plugin\" style=\"cursor: pointer; cursor: hand;\"><strong>{$info['plugin_name']}</strong></label></td>"
 			."<td>{$info['plugin_version']}</td>"
+			."<td>{$info['plugin_build']}</td>"
 			."<td>"
 				.labeltype($info['plugin_type'])
 			."</td>"
@@ -68,6 +69,7 @@ if (empty($av_plugins))
 					<th width="50px"><?php echo __('Enabled');?></th>
 					<th width="100px"><?php echo __('Name');?></th>
 					<th width="50px"><?php echo __('Version');?></th>
+					<th width="50px"><?php echo __('Build');?></th>
 					<th width="50px"><?php echo __('Type');?></th>
 					<th><?php echo __('Description');?></th>
 				</tr>

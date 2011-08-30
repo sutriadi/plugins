@@ -134,7 +134,7 @@ function cols_order_get($table, $mode = 'array')
  * 
  * name: set_options
  * @param $num
- * @return html $options
+ * @return $options html
  */
 function set_options($num = 0)
 {
@@ -147,4 +147,81 @@ function set_options($num = 0)
 		$options .= '<option value="' . $n . '" ' . $selected . '>' . $n . '</option>';
 	}
 	return $options;
+}
+
+/*
+ * 
+ * name: base_cols_name
+ * @param $type string
+ * @return $base_cols_name array
+ */
+function base_cols_name($type = 'member')
+{
+	switch ($type)
+	{
+		case 'biblio':
+			$base_cols_name = array(
+				'biblio_id' => __('ID'),
+				'gmd_id' => __('GMD'), // to join table
+				'title' => __('Title'),
+				'isbn_issn' => __('ISBN/ISSN'),
+				'edition' => __('Edition'),
+				'publisher_id' => __('Publisher'), // to join table
+				'publish_year' => __('Publishing Year'),
+				'collation' => __('Collation'),
+				'series_title' => __('Series Title'),
+				'call_number' => __('Call Number'),
+				'language_id' => __('Language'),
+				'publish_place_id' => __('Publishing Place'), // to join table
+				'classification' => __('Classification'),
+				'notes' => __('Abstract/Notes'),
+				'image' => __('Image'),
+				'spec_detail_info' => __('Specific Detail Info'),
+				'opac_hide' => __('Hide in Opac'),
+				'promoted' => __('Promote to Homepage'),
+				'input_date' => __('Input Date'),
+				'last_update' => __('Last Update'),
+			);
+			break;
+		case 'member':
+		default:
+			$base_cols_name = array(
+				'member_id' => __('ID'),
+				'member_name' => __('Name'),
+				'gender' => __('Gender'),
+				'birth_date' => __('Birth Date'),
+				'member_type_name' => __('Type'), // to join table
+				'member_address' => __('Address'),
+				'member_mail_address' => __('Mail Address'),
+				'member_email' => __('E-Mail'),
+				'postal_code' => __('Zip Code'),
+				'inst_name' => __('Institution'),
+				'member_image' => __('Photo'),
+				'member_phone' => __('Phone'),
+				'member_fax' => __('Fax'),
+				'member_since_date' => __('Member Since'),
+				'register_date' => __('Register Date'),
+				'expire_date' => __('Expire Date'),
+				'member_notes' => __('Notes'),
+				'is_pending' => __('Pending Membership'),
+				'last_login' => __('Last Login'),
+				'last_login_ip' => __('Last Login From'),
+				'input_date' => __('Input Date'),
+				'last_update' => __('Last Update'),
+			);
+	}
+	return $base_cols_name;
+}
+
+/*
+ * 
+ * name: set_table
+ * @param $table string
+ * @param $tag string
+ * @param $options array
+ * @return string html
+ */
+function set_table($table, $tag = 'head', $options = array())
+{
+	$order_cols = cols_order_get($table);
 }
