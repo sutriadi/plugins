@@ -27,14 +27,11 @@ if (!defined('MODULES_WEB_ROOT_DIR')) {
 ?>
 
 <!-- formulir mulai -->
-<fieldset class="menuBox" style="font-weight: normal;">
-	<div style="padding: 3px; padding-left: 59px; background: url(<?php echo MODULES_WEB_ROOT_DIR;?>/plugins/logo.png) no-repeat -10px 5px;">
-		<strong>Plugins - <?php echo __('DataTables');?> <?php echo (isset($subtitle)) ? $subtitle : '';?></strong>
-		<hr />
-		<?php echo __('You access this page from IP address');?>: <strong><?php echo remote_addr();?></strong>.
-		<?php echo __('This page can accessed from following IP addresses');?>: <strong><?php echo implode(', ', json_decode(variable_get('allowed_ip', '["127.0.0.1", "::1"]'), true));?></strong>
-	</div>
-</fieldset>
+<?php
+	$subtitle = isset($subtitle) ? ' ' . $subtitle : '';
+	$title = sprintf('%s - %s', __('Plugins'), __('Configure')) . $subtitle;
+	echo fs_render($title);
+?>
 
 <table cellspacing="0" cellpadding="3" style="width: 100%; background-color: #dcdcdc;">
 	<tr>

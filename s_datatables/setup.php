@@ -36,7 +36,7 @@ $can_read = utility::havePrivilege('plugins', 'r');
 $can_write = utility::havePrivilege('plugins', 'w');
 
 if (!$can_read) {
-	die('<div class="errorBox">You dont have enough privileges to view this section</div>');
+	die(sprintf('<div class="errorBox">%s</div>', __('You dont have enough privileges to view this section')));
 }
 
 require('../func.php');
@@ -71,74 +71,52 @@ if ($_POST)
 					case "sort":
 						unset($post->saveData);
 						unset($post->title);
-						if (isset($post->reindex))
+						$columns = (array) $post;
+						$presorted = array();
+						foreach ($columns as $key => $val)
 						{
-							$sql = sprintf("UPDATE `plugins_dtables` "
-								. " SET `sort` = '' "
-								. " WHERE `table` = '%s'",
-								$post->table
-							);
-						}
-						else
-						{
-							$columns = (array) $post;
-							$presorted = array();
-							foreach ($columns as $key => $val)
+							if ($key !== 'table')
 							{
-								if ($key !== 'table')
-								{
-									if ( ! is_numeric($val))
-										$val = count($presorted);
-									if ( ! in_array($val, $presorted))
-										$presorted[$key] = $val;
-									else
-										$presorted[$key] = $val+1;
-								}
+								if ( ! is_numeric($val))
+									$val = count($presorted);
+								if ( ! in_array($val, $presorted))
+									$presorted[$key] = $val;
+								else
+									$presorted[$key] = $val+1;
 							}
-							if (count($presorted) > 0)
-								$sorted = json_encode($presorted);
-							unset($presorted);
-							unset($columns);
-
-							$sql = sprintf("UPDATE `plugins_dtables` "
-								. " SET `sort` = '%s' "
-								. " WHERE `table` = '%s'",
-								$sorted,
-								$post->table
-							);
 						}
+						if (count($presorted) > 0)
+							$sorted = json_encode($presorted);
+						unset($presorted);
+						unset($columns);
+
+						$sql = sprintf("UPDATE `plugins_dtables` "
+							. " SET `sort` = '%s' "
+							. " WHERE `table` = '%s'",
+							$sorted,
+							$post->table
+						);
 						break;
 					case "add":
 					default:
 						$base_cols = (isset($post->base_cols)) ? json_encode($post->base_cols) : '';
 						$php_code = (isset($post->end_cols_php)) ? true : false;
 						$windowed = (isset($post->windowed)) ? true : false;
-/*
-						$exp = explode(chr(13), trim($post->end_cols));
-						foreach ($exp as $x)
+						$in_sql = '';
+						if (isset($post->reindex))
 						{
-							$label = '';
-							$content = $x;
-							$del = explode(":", $x);
-							if (count($del) > 1)
-							{
-								$label = $del[0];
-								unset($del[0]);
-								$content = implode(":", $del);
-							}
-							echo "label: $label, content: $content<br />";
+							$in_sql .= ", `sort` = '' ";
 						}
-						exit();
-*/
 						$sql = sprintf("UPDATE `plugins_dtables` "
-							. " SET `first_col` = '%s', `base_cols` = '%s', `end_cols` = '%s', `php_code` = %d, `add_code` = '%s', `windowed` = '%s' "
-							. " WHERE `table` = '%s'",
+							. " SET `first_col` = '%s', `base_cols` = '%s', `end_cols` = '%s', `php_code` = %d, `add_code` = '%s', `windowed` = '%s' %s"
+							. " WHERE `table` = '%s';",
 							$post->first_col,
 							$base_cols,
-							trim($post->end_cols),
+							trim(addslashes($post->end_cols)),
 							$php_code,
-							trim($post->add_code),
+							trim(addslashes(php_rem($post->add_code))),
 							$windowed,
+							$in_sql,
 							$post->table
 						);
 				}

@@ -23,8 +23,8 @@
 /*
  * 
  * name: table_get
- * @param $table
- * @param $mode
+ * @param $table string, name of table
+ * @param $mode string, return mode
  * @return array or number
  */
 function table_get($table, $mode = 'array')
@@ -51,6 +51,35 @@ function table_get($table, $mode = 'array')
 	}
 	else if ($mode == 'check')
 		return $num_rows;
+}
+
+/*
+ * 
+ * name: drupal_eval
+ * @param $code string
+ * @return $output
+ */
+function drupal_eval($code)
+{
+	global $conf, $dbs;
+	ob_start();
+	print eval('?>' . $code);
+	$output = ob_get_contents();
+	ob_end_clean();
+	return $output;
+}
+
+/*
+ * 
+ * name: php_rem
+ * @param $str string
+ * @return string
+ */
+function php_rem($str)
+{
+	$str = str_replace(array('<?php', '?>'), '', $str);
+	$str = str_replace('<?', '', $str);
+	return $str;
 }
 
 /*
@@ -224,4 +253,167 @@ function base_cols_name($type = 'member')
 function set_table($table, $tag = 'head', $options = array())
 {
 	$order_cols = cols_order_get($table);
+}
+
+/*
+ * 
+ * name: table_render
+ * @param $table string
+ * @param $table boolean
+ * @return
+ */
+function table_render($dtable, $table = true)
+{
+
+	global $base_cols_name, $fcols;
+	$order_cols = cols_order_get($dtable);
+
+	if (count($order_cols) > 0)
+	{
+		$precols = array();
+		foreach ($order_cols as $key => $val)
+		{
+			if (array_key_exists($key, $base_cols_name))
+			{
+				if ($table === true)
+				{
+					$col_arrs = array(
+						'label' => $base_cols_name[$key],
+						'name' => $key,
+					);
+					if (isset($precols[$val]))
+					{
+						$precols[$val+1] = $col_arrs;
+					}
+					else
+						$precols[$val] = $col_arrs;
+				}
+				else
+				{
+					if (isset($precols[$val]))
+					{
+						$precols[$val+1] = $key;
+					}
+					else
+						$precols[$val] = $key;
+				}
+				unset($col_arrs);
+			}
+		}
+		$num_cols = count($precols);
+		
+		if (isset($precols) AND is_array($precols))
+		{
+			// mengurutkan ulang kolom, menghitung jumlah kolom
+			ksort($precols);
+			
+			if ($table === true)
+			{
+				$thead = '<thead><tr><th colspan="%d">' . __('Members Details') . '</th></tr><tr>';
+				$tbody = '<tbody><tr><td colspan="%d" class="dataTables_empty">' . __('Loading data from server') . '</td></tr></tbody>';
+				$tfoot = '<tfoot><tr>';
+				$php_js = 'var phpDef = { %s };';
+				$js_def = array();
+				$js_def['aoColumnDefs'] = array();
+				
+				if (in_array($fcols[0], array('radio', 'checkbox')))
+				{
+					$num_cols++;
+					$thead .= '<th></th>';
+					$tfoot .= '<th></th>';
+					$js_def['aoColumnDefs'][] = ' { "bSortable": false, "aTargets": [ 0 ] } ';
+					$js_def['aoColumnDefs'][] = ' { "sClass": "center", "aTargets": [ 0 ] } ';
+				}
+			}
+
+			$ordc = array();
+			foreach ($precols as $ci => $cv)
+			{
+				$ordc[] = $cv;
+				if ($table === true)
+				{
+					$label = $cv['label'];
+					$thead .= '<th>' . $label . '</th>';
+					$tfoot .= '<th style="padding:0px;"><input value="' . $label . '" type="text" class="search_init" /></th>';
+				}
+			}
+			$precols = $ordc;
+			unset($ordc);
+
+			$a_content = array();
+			if ( ! empty($fcols[2]))
+			{
+				$end_cols = explode(chr(10), $fcols[2]);
+				$i_col = $num_cols;
+				$num_cols += count($end_cols);
+
+				foreach ($end_cols as $val)
+				{
+					$label = '';
+					$content = $val;
+					$del = explode(":", $val);
+
+					if (count($del) > 1)
+					{
+						$label = $del[0];
+						unset($del[0]);
+						$content = implode(":", $del);
+					}
+
+					if ($table === true)
+					{
+						$thead .= sprintf('<th>%s</th>', $label);
+						$tfoot .= '<th></th>';
+						$js_def['aoColumnDefs'][] = sprintf(' { "bSortable": false, "aTargets": [ %d ] } ', $i_col);
+					}
+
+					$i_col ++;
+					$a_content[] = trim($content);
+				}
+			}
+
+			if ($table === true)
+			{
+				$thead .= '</tr></thead>';
+				$tfoot .= '</tr></tfoot>';
+				$thead = sprintf($thead, $num_cols);
+				$tbody = sprintf($tbody, $num_cols);
+				$tfoot = sprintf($tfoot, $num_cols);
+
+				if (count($js_def > 0))
+				{
+					$v_arr = array();
+					foreach ($js_def as $key => $val)
+					{
+						if (is_array($val) AND count($val) > 0)
+						{
+							$v_arr[$key] = sprintf(' "%s": [ %s ] ',
+								$key,
+								implode(', ', $val)
+							);
+						}
+					}
+					
+					$v_str = implode(', ', $v_arr);
+					$php_js = sprintf($php_js, $v_str);
+				}
+			}
+		}
+	}
+	
+	if ($table === true)
+	{
+		return array('php_js' => $php_js,
+			'thead' => $thead,
+			'tbody' => $tbody,
+			'tfoot' => $tfoot
+		);
+	}
+	else
+	{
+		return array(
+			'precols' => $precols,
+			'a_content' => $a_content,
+		);
+	}
 }

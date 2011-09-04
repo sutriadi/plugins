@@ -7,265 +7,244 @@
  *      
  */
 
-define('INDEX_AUTH', '1');
+	define('INDEX_AUTH', '1');
 
-if (!defined('SENAYAN_BASE_DIR')) {
-	require '../../../../../../sysconfig.inc.php';
-	require SENAYAN_BASE_DIR.'admin/default/session.inc.php';
-}
-require SENAYAN_BASE_DIR.'admin/default/session_check.inc.php';
+	if (!defined('SENAYAN_BASE_DIR')) {
+		require '../../../../../../sysconfig.inc.php';
+		require SENAYAN_BASE_DIR.'admin/default/session.inc.php';
+	}
+	require SENAYAN_BASE_DIR.'admin/default/session_check.inc.php';
 
-$can_read = utility::havePrivilege('plugins', 'r');
-$can_read = utility::havePrivilege('plugins', 'w');
+	$can_read = utility::havePrivilege('plugins', 'r');
+	$can_read = utility::havePrivilege('plugins', 'w');
 
-if (!$can_read) {
-      die('<div class="errorBox">You dont have enough privileges to view this section</div>');
-}
+	if (!$can_read) {
+		die(sprintf('<div class="errorBox">%s</div>', __('You dont have enough privileges to view this section')));
+	}
 
-$conf = $_SESSION['plugins_conf'];
-include('../../../func.php');
-include('../../../s_datatables/func.php');
+	// memanggil konfigurasi dan fungsi
+	$conf = $_SESSION['plugins_conf'];
+	include('../../../func.php'); // fungsi umum plugin
+	include('../../../s_datatables/func.php'); // fungsi khusus datatables
 
-$plugin = '';
-$table = '';
+	$plugin = '';
+	$table = '';
 
-if ($_GET AND isset($_GET['plugin']))
-	$plugin = $_GET['plugin'];
+	// mengambil nama plugin dan table
+	if ($_GET AND isset($_GET['plugin']))
+		$plugin = $_GET['plugin'];
 
-if ($_GET AND isset($_GET['table']))
-	$table = $_GET['table'];
+	if ($_GET AND isset($_GET['table']))
+		$table = $_GET['table'];
 
-if ($plugin == '' || $table == '')
-{
-	exit();
-}
-
-checkip();
-checken($plugin);
-checken($table, 'table');
-checkref('host');
-
-$vars = table_get($table);
-$base_cols_name = base_cols_name($vars[1]);
-$fcols = cols_get($table);
-$order_cols = cols_order_get($table);
-
-if (count($order_cols) > 0)
-{
-	$columns = array();
-	foreach ($order_cols as $key => $val)
+	// keluar bila nama plugin dan table tidak valid
+	if ($plugin == '' || $table == '')
 	{
-		if (array_key_exists($key, $base_cols_name))
+		exit();
+	}
+
+	// mengecek ip, plugin aktif, table aktif dan referer
+	checkip();
+	checken($plugin);
+	checken($table, 'table');
+	checkref('host');
+
+	// mengambil data table, nama kolom, kolom dan pengurutan kolom
+	$dtables = table_get($table);
+	$base_cols_name = base_cols_name($dtables[1]);
+	$fcols = cols_get($table);
+
+	$trender = table_render($table, false);
+	extract($trender);
+
+	/* Array of database columns which should be read and sent back to DataTables. Use a space where
+	 * you want to insert a non-database field (for example a counter or static image)
+	 */
+	$aColumns = $precols;
+	
+	/* Indexed column (used for fast and accurate table cardinality) */
+	$sIndexColumn = ($dtables[1] == 'member') ? 'member_id' : 'biblio_id';
+	
+	/* DB table to use */
+	$sTable = $dtables[1];
+
+	/* Database connection information */
+	$gaSql['user']       = DB_USERNAME;
+	$gaSql['password']   = DB_PASSWORD;
+	$gaSql['db']         = DB_NAME;
+	$gaSql['server']     = DB_HOST . ':' . DB_PORT;
+
+	/* 
+	 * MySQL connection
+	 */
+	$gaSql['link'] =  @mysql_pconnect( $gaSql['server'], $gaSql['user'], $gaSql['password']  ) or
+		die( 'Could not open connection to server' );
+
+	mysql_select_db( $gaSql['db'], $gaSql['link'] ) or 
+		die( 'Could not select database '. $gaSql['db'] );
+
+	/* 
+	 * Paging
+	 */
+	$sLimit = "";
+	if ( isset( $_POST['iDisplayStart'] ) && $_POST['iDisplayLength'] != '-1' )
+	{
+		$sLimit = "LIMIT ".mysql_real_escape_string( $_POST['iDisplayStart'] ).", ".
+			mysql_real_escape_string( $_POST['iDisplayLength'] );
+	}
+
+	/*
+	 * Ordering
+	 */
+	$sOrder = "";
+	$first_order = (in_array($fcols[0], array('radio', 'checkbox'))) ? 1 : 0;
+	if ( isset( $_POST['iSortCol_0'] ) )
+	{
+		$sOrder = "ORDER BY  ";
+		for ( $i=0 ; $i<intval( $_POST['iSortingCols'] ) ; $i++ )
 		{
-			if (isset($columns[$val]))
+			if ( $_POST[ 'bSortable_'.intval($_POST['iSortCol_'.$i]) ] == "true" )
 			{
-				$columns[$val+1] = $key;
+				$sOrder .= $aColumns[ intval( $_POST['iSortCol_'.$i] ) - $first_order ]."
+					".mysql_real_escape_string( $_POST['sSortDir_'.$i] ) .", ";
+			}
+		}
+		
+		$sOrder = substr_replace( $sOrder, "", -2 );
+		if ( $sOrder == "ORDER BY" )
+		{
+			$sOrder = "";
+		}
+	}
+
+	/* 
+	 * Filtering
+	 * NOTE this does not match the built-in DataTables filtering which does it
+	 * word by word on any field. It's possible to do here, but concerned about efficiency
+	 * on very large tables, and MySQL's regex functionality is very limited
+	 */
+	$sWhere = "";
+	if ( isset($_POST['sSearch']) AND $_POST['sSearch'] != "" )
+	{
+		$sWhere = 'WHERE (';
+		for ( $i=0 ; $i<count($aColumns) ; $i++ )
+		{
+			$sWhere .= $aColumns[$i]." LIKE '%".mysql_real_escape_string( $_POST['sSearch'] )."%' OR ";
+		}
+		$sWhere = substr_replace( $sWhere, "", -3 );
+		$sWhere .= ')';
+	}
+
+	/* Individual column filtering */
+	for ( $i=0 ; $i<count($aColumns) ; $i++ )
+	{
+		if ( isset($_POST['bSearchable_'.$i]) AND $_POST['bSearchable_'.$i] == "true" AND isset($_POST['sSearch_'.$i]) AND $_POST['sSearch_'.$i] != '' )
+		{
+			if ( $sWhere == "" )
+			{
+				$sWhere = "WHERE ";
 			}
 			else
-				$columns[$val] = $key;
-			unset($col_arrs);
+			{
+				$sWhere .= " AND ";
+			}
+			$sWhere .= $aColumns[$i]." LIKE '%".mysql_real_escape_string($_POST['sSearch_'.$i])."%' ";
 		}
 	}
 
-	if (isset($columns) AND is_array($columns))
+	/* Left joining table */
+	$sJoin = '';
+	if ($dtables[1] == 'member')
 	{
-		ksort($columns);
-		$ordc = array();
-		foreach ($columns as $ci => $cv)
+		$sJoin = " LEFT JOIN `mst_member_type` ON `mst_member_type`.`member_type_id` = `member`.`member_type_id` ";
+	}
+	else
+	{
+		$sJoin = "";
+	}
+
+	/*
+	 * SQL queries
+	 * Get data to display
+	 */
+	$sQuery = "SELECT SQL_CALC_FOUND_ROWS " . str_replace(" , ", " ", implode(", ", $aColumns))
+		. " FROM " . $sTable
+		. " " . $sJoin
+		. " " . $sWhere
+		. " " . $sOrder
+		. " " . $sLimit
+	. "";
+	$sQuery = trim($sQuery);
+	$rResult = mysql_query( $sQuery, $gaSql['link'] ) or die(mysql_error());
+
+	/* Data set length after filtering */
+	$sQuery = "
+		SELECT FOUND_ROWS()
+	";
+	$rResultFilterTotal = mysql_query( $sQuery, $gaSql['link'] ) or die(mysql_error());
+	$aResultFilterTotal = mysql_fetch_array($rResultFilterTotal);
+	$iFilteredTotal = $aResultFilterTotal[0];
+
+	/* Total data set length */
+	$sQuery = "
+		SELECT COUNT(".$sIndexColumn.")
+		FROM   $sTable
+	";
+	$rResultTotal = mysql_query( $sQuery, $gaSql['link'] ) or die(mysql_error());
+	$aResultTotal = mysql_fetch_array($rResultTotal);
+	$iTotal = $aResultTotal[0];
+
+	if ( ! empty($fcols[4]))
+	{
+		$add_func = '<?php ' . $fcols[4] . ' ?>';
+		ob_start();
+		print eval('?>' . $add_func);
+		ob_get_contents();
+		ob_end_clean();
+	}
+
+	/*
+	 * Output
+	 */
+	$sEcho = isset($_POST['sEcho']) ? $_POST['sEcho'] : '';
+	$sOutput = '{' .
+		'"sEcho": '.$sEcho.', ' .
+		'"iTotalRecords": '.$iTotal.', ' .
+		'"iTotalDisplayRecords": '.$iFilteredTotal.', ' .
+		'"aaData": [ ';
+	while ( $aRow = mysql_fetch_array( $rResult ) )
+	{
+		$sOutput .= "[";
+		if (in_array($fcols[0], array('radio', 'checkbox')))
 		{
-			$ordc[] = $cv;
+			$sOutput .= '"<input type=\"' . $fcols[0] . '\" id=\"' . $aRow[$sIndexColumn] . '\" name=\"' . $dtables[1] . '[]\" value=\"' . $aRow[$sIndexColumn] .  '\" />", ';
 		}
-		$columns = $ordc;
-		unset($ordc);
-		if ( ! empty($fcols[2]))
+		
+		foreach ($aColumns as $vColumns)
 		{
-			$end_cols = explode(chr(10), $fcols[2]);
-			$num_cols += count($end_cols);
-			$a_content = array();
-			foreach ($end_cols as $val)
+			$sOutput .= '"'. str_replace('"', '\"', $aRow[ $vColumns ]).'",';
+		}
+		
+		if (isset($a_content) AND is_array($a_content) AND count($a_content > 0))
+		{
+			foreach ($a_content as $end_col)
 			{
-				$content = $val;
-				$del = explode(":", $val);
-				if (count($del) > 1)
+				if ($fcols[3] == true)
 				{
-					unset($del[0]);
-					$content = implode(":", $del);
+					ob_start();
+					print eval('?>' . $end_col);
+					$end_col = ob_get_contents();
+					ob_end_clean();
 				}
-				$a_content[] = trim($content);
+				$sOutput .= sprintf('"%s",', htmlentities($end_col));
 			}
 		}
+		
+		$sOutput = substr_replace( $sOutput, "", -1 );
+		$sOutput .= "],";
 	}
-}
-
-$gaSql['user']       = DB_USERNAME;
-$gaSql['password']   = DB_PASSWORD;
-$gaSql['db']         = DB_NAME;
-$gaSql['server']     = DB_HOST . ':' . DB_PORT;
-
-$aColumns = $columns;
-$sIndexColumn = ($vars[1] == 'member') ? 'member_id' : 'biblio_id';
-$sTable = $vars[1];
-
-$leftjoin = '';
-if ($vars[1] == 'member')
-{
-	$leftjoin = " LEFT JOIN mst_member_type ON mst_member_type.member_type_id = member.member_type_id ";
-}
-else
-{
-	$leftjoin = "";
-}
-
-$gaSql['link'] =  @mysql_pconnect( $gaSql['server'], $gaSql['user'], $gaSql['password']  ) or
-	die( 'Could not open connection to server' );
-
-mysql_select_db( $gaSql['db'], $gaSql['link'] ) or 
-	die( 'Could not select database '. $gaSql['db'] );
-
-/* 
- * Paging
- */
-$sLimit = "";
-if ( isset( $_POST['iDisplayStart'] ) && $_POST['iDisplayLength'] != '-1' )
-{
-	$sLimit = "LIMIT ".mysql_real_escape_string( $_POST['iDisplayStart'] ).", ".
-		mysql_real_escape_string( $_POST['iDisplayLength'] );
-}
-
-/*
- * Ordering
- */
-$sOrder = "";
-$first_order = (in_array($fcols[0], array('radio', 'checkbox'))) ? 1 : 0;
-if ( isset( $_POST['iSortCol_0'] ) )
-{
-	$sOrder = "ORDER BY  ";
-	for ( $i=0 ; $i<intval( $_POST['iSortingCols'] ) ; $i++ )
-	{
-		if ( $_POST[ 'bSortable_'.intval($_POST['iSortCol_'.$i]) ] == "true" )
-		{
-			$sOrder .= $aColumns[ intval( $_POST['iSortCol_'.$i] ) - $first_order ]."
-				".mysql_real_escape_string( $_POST['sSortDir_'.$i] ) .", ";
-		}
-	}
-	
-	$sOrder = substr_replace( $sOrder, "", -2 );
-	if ( $sOrder == "ORDER BY" )
-	{
-		$sOrder = "";
-	}
-}
-
-/* 
- * Filtering
- * NOTE this does not match the built-in DataTables filtering which does it
- * word by word on any field. It's possible to do here, but concerned about efficiency
- * on very large tables, and MySQL's regex functionality is very limited
- */
-$sWhere = "";
-if ( $_POST['sSearch'] != "" )
-{
-	$sWhere = "WHERE (";
-	for ( $i=0 ; $i<count($aColumns) ; $i++ )
-	{
-		$sWhere .= $aColumns[$i]." LIKE '%".mysql_real_escape_string( $_POST['sSearch'] )."%' OR ";
-	}
-	$sWhere = substr_replace( $sWhere, "", -3 );
-	$sWhere .= ')';
-}
-
-/* Individual column filtering */
-for ( $i=0 ; $i<count($aColumns) ; $i++ )
-{
-	if ( $_POST['bSearchable_'.$i] == "true" && $_POST['sSearch_'.$i] != '' )
-	{
-		if ( $sWhere == "" )
-		{
-			$sWhere = "WHERE ";
-		}
-		else
-		{
-			$sWhere .= " AND ";
-		}
-		$sWhere .= $aColumns[$i]." LIKE '%".mysql_real_escape_string($_POST['sSearch_'.$i])."%' ";
-	}
-}
-
-/*
- * SQL queries
- * Get data to display
- */
-$sQuery = "" .
-	" SELECT SQL_CALC_FOUND_ROWS " . str_replace(" , ", " ", implode(", ", $aColumns)).
-	" FROM $sTable " .
-	" %s " .
-	" $sWhere " .
-	" $sOrder " .
-	" $sLimit " .
-"";
-$sQuery = sprintf($sQuery, $leftjoin);
-/*
-echo $sQuery;
-*/
-$rResult = mysql_query( $sQuery, $gaSql['link'] ) or die(mysql_error());
-
-/* Data set length after filtering */
-$sQuery = "
-	SELECT FOUND_ROWS()
-";
-$rResultFilterTotal = mysql_query( $sQuery, $gaSql['link'] ) or die(mysql_error());
-$aResultFilterTotal = mysql_fetch_array($rResultFilterTotal);
-$iFilteredTotal = $aResultFilterTotal[0];
-
-/* Total data set length */
-$sQuery = "
-	SELECT COUNT(".$sIndexColumn.")
-	FROM   $sTable
-";
-$rResultTotal = mysql_query( $sQuery, $gaSql['link'] ) or die(mysql_error());
-$aResultTotal = mysql_fetch_array($rResultTotal);
-$iTotal = $aResultTotal[0];
-
-/*
- * Output
- */
-$sEcho = isset($_POST['sEcho']) ? $_POST['sEcho'] : '';
-$sOutput = '{' .
-	'"sEcho": '.$sEcho.', ' .
-	'"iTotalRecords": '.$iTotal.', ' .
-	'"iTotalDisplayRecords": '.$iFilteredTotal.', ' .
-	'"aaData": [ ';
-while ( $aRow = mysql_fetch_array( $rResult ) )
-{
-	$sOutput .= "[";
-	if (in_array($fcols[0], array('radio', 'checkbox')))
-	{
-		$sOutput .= '"<input type=\"' . $fcols[0] . '\" id=\"' . $aRow[$sIndexColumn] . '\" name=\"' . $vars[1] . '[]\" value=\"' . $aRow[$sIndexColumn] .  '\" />", ';
-	}
-/*
-	print_r($aColumns);
-*/
-/*
-	for ( $i=0 ; $i<count($aColumns) ; $i++ )
-*/
-	foreach ($aColumns as $vColumns)
-	{
-		$sOutput .= '"'. str_replace('"', '\"', $aRow[ $vColumns ]).'",';
-	}
-	
-	if (isset($a_content) AND is_array($a_content) AND count($a_content > 0))
-	{
-		foreach ($a_content as $end_col)
-		{
-			$sOutput .= sprintf('"%s",', $end_col);
-		}
-	}
-	
 	$sOutput = substr_replace( $sOutput, "", -1 );
-	$sOutput .= "],";
-}
-$sOutput = substr_replace( $sOutput, "", -1 );
-$sOutput .= '] }';
+	$sOutput .= '] }';
 
-header('Content-type: text/plain');
-echo $sOutput;
+	header('Content-type: text/plain');
+	echo $sOutput;

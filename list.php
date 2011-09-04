@@ -65,17 +65,11 @@ if (empty($en_plugins))
 
 ?>
 
-<!-- informasi mulai -->
-<fieldset class="menuBox" style="font-weight: normal;">
-	<div style="padding: 3px; padding-left: 59px; background: url(<?php echo MODULES_WEB_ROOT_DIR;?>/plugins/logo.png) no-repeat -10px 5px;">
-		<strong><?php printf('%s - %s', __('Plugins'), __('General Informations'));?></strong>
-		<hr />
-		<?php echo __('You access this page from IP address');?>: <strong><?php echo remote_addr();?></strong>.
-		<?php echo __('This page can accessed from following IP addresses');?>: <strong><?php echo implode(', ', json_decode(variable_get('allowed_ip', '["127.0.0.1", "::1"]'), true));?></strong>
-	</div>
-</fieldset>
-<!-- informasi akhir -->
-<!-- formulir mulai -->
+<?php
+	$title = sprintf('%s - %s', __('Plugins'), __('General Informations'));
+	echo fs_render($title);
+?>
+
 <fieldset>
 	<legend><strong><?php echo __('Enabled Plugins List');?></strong></legend>
 	<table width="100%" cellspacing="0" cellpadding="5" style="text-align: left;">
@@ -94,5 +88,3 @@ if (empty($en_plugins))
 	$_SESSION['plugins_enabled'] = $enplugins;
 	unset($en_plugins);
 ?>
-
-<!-- formulir akhir -->

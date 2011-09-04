@@ -241,6 +241,7 @@ if (isset($_GET) AND isset($_GET['cols']))
 				<span>
 					<?php echo __('Additional columns at end of the table. Separate each other with newline.');?>
 					<?php echo __('You can use format <strong>label</strong>: <strong>content</strong>.');?>
+					<?php echo __('PHP code must be inside <strong>&lt;?php ?&gt;</strong> tag.');?>
 				</span>
 			</td>
 		</tr>
@@ -253,7 +254,6 @@ if (isset($_GET) AND isset($_GET['cols']))
 				<br />
 				<span>
 					<?php echo __('Check it if your additional columns contain PHP code.');?>
-					<?php echo __('Not implemented yet!');?>
 				</span>
 			</td>
 		</tr>
@@ -265,7 +265,7 @@ if (isset($_GET) AND isset($_GET['cols']))
 				<br />
 				<span>
 					<?php echo __('Additional variables, functions or etc to handle your additional columns.');?>
-					<?php echo __('Not implemented yet!');?>
+					<?php echo __('<strong>&lt;?php ?&gt;</strong> tags do not need to be included.');?>
 				</span>
 			</td>
 		</tr>
@@ -282,8 +282,6 @@ if (isset($_GET) AND isset($_GET['cols']))
 				</span>
 			</td>
 		</tr>
-<?php elseif ($cols == 'sort'): ?>
-		<?php echo $form;?>
 		<tr valign="top">
 			<td class="alterCell" style="font-weight: bold;"><label for="reindex" style="cursor: pointer;"><?php echo __('Reindex');?></label></td>
 			<td class="alterCell" style="font-weight: bold; width: 1%;">:</td>
@@ -294,6 +292,8 @@ if (isset($_GET) AND isset($_GET['cols']))
 				<span><?php echo __('Check it if you want to reindex columns.');?></span>
 			</td>
 		</tr>
+<?php elseif ($cols == 'sort'): ?>
+		<?php echo $form;?>
 <?php endif;?>
 	</table>
 	<table cellspacing="0" cellpadding="3" style="width: 100%; background-color: #dcdcdc;">
@@ -307,4 +307,4 @@ if (isset($_GET) AND isset($_GET['cols']))
 	</table>
 </form>
 <?php endif;?>
-<iframe name="submitExec" class="noBlock" style="visibility: visible; width: 100%;"></iframe>
+<iframe name="submitExec" class="noBlock" style="visibility: hidden; width: 100%; height: 0;"></iframe>

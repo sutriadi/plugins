@@ -176,8 +176,8 @@ function checkref($mode = 'module')
 		if ($ref_path == $dest_path)
 			$ref = true;
 	}
-	if ( ! $ref)
-		die('<div>Invalid referer!</div>');
+	if ( ! isset($ref))
+		die(sprintf('<div>%s!</div>', __('Invalid referer')));
 	else
 		return;
 }
@@ -296,10 +296,10 @@ function labeltype($type)
 {
 	switch ($type)
 	{
-		case 0: $t = 'None'; break;
-		case 1: $t = 'Sibling'; break;
-		case 2: $t = 'New Window'; break;
-		default: $t = 'None';
+		case 0: $t = __('None'); break;
+		case 1: $t = __('Sibling'); break;
+		case 2: $t = __('New Window'); break;
+		default: $t = __('None');
 	}
 	return $t;
 }
@@ -579,4 +579,54 @@ function css_get($path = true)
 		$css_name = 'library/ui/css/' . variable_get('ui_theme') . '/' . $css_name;
 	}
 	return $css_name;
+}
+
+/*
+ * 
+ * name: unknown
+ * @param
+ * @return
+ */
+function ip_info($detail = true)
+{
+	$r = sprintf(': <strong>%s</strong>.', remote_addr());
+	$info = __('You access this page from IP address') . $r;
+	if ($detail === true)
+	{
+		$rs = sprintf(': <strong>%s</strong>', implode(', ', json_decode(variable_get('allowed_ip', '["127.0.0.1", "::1"]'), true)));
+		$info .= __(' This page can accessed from following IP addresses') . $rs;
+	}
+	return $info;
+}
+
+/*
+ * 
+ * name: unknown
+ * @param
+ * @return
+ */
+function fs_render($title, $params = array())
+{
+	if (empty($title))
+	{
+		$title = __('Plugins');
+	};
+	extract($params);
+	$logo = ( ! isset($logo) || trim($logo) == '') ? 'logo.png' : $logo;
+	$bottom = ( ! isset($bottom) || trim($bottom) == '') ? '' : $bottom;
+	$ip = ( ! isset($ip)) ? true : $ip;
+	$ip_detail = ( ! isset($ip_detail)) ? true : $ip_detail;
+
+	$fs = '<fieldset class="menuBox" style="font-weight: normal;">';
+	$fs .= sprintf('<div style="padding: 3px; padding-left: 59px; background: url(%s) no-repeat -10px 5px;">', MODULES_WEB_ROOT_DIR . '/plugins/' . $logo);
+	$fs .= sprintf('<strong>%s</strong>', $title);
+	$fs .= '<hr />';
+	if (trim($bottom) !== '')
+		$fs .= $bottom;
+	if ($ip === true)
+		$fs .= ip_info($ip_detail);
+
+	$fs .= '</div>';
+	$fs .= '</fieldset>';
+	return $fs;
 }
