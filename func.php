@@ -124,6 +124,7 @@ function checkip()
  * @param $mode
  *   mode of checking referer. available mode:
  *   'module' (default): validating referer must from plugin page
+ *   'plugin': validating referer is from one plugin page
  *   'admin': validating referer is from one administration page
  *   'host': validating referer have same host name
  *   'ip': validating referer have same ip address
@@ -152,6 +153,7 @@ function checkref($mode = 'module')
 		$dest_path = $_SERVER['SCRIPT_NAME'];
 		$dest_ip = gethostbyname($dest_host);
 		$dest_admin = $dest_host . SENAYAN_WEB_ROOT_DIR . 'admin';
+		$dest_plugin = $dest_admin . '/modules/plugins';
 		$dest_q = 'mod=plugins';
 		$dest_req = $dest_admin . '?' . $dest_q;
 		switch ($mode)
@@ -168,6 +170,12 @@ function checkref($mode = 'module')
 				if ($ref_admin == $dest_admin)
 					$ref = true;
 				break;
+			case "plugin":
+				$from_plugin = explode($dest_plugin, $ref_host . $ref_path);
+				if (count($from_plugin) > 0 AND $from_plugin[0] == 0)
+					$ref = true;
+				else
+					checkref();
 			case "module":
 			default:
 				if ($ref_req == $dest_req)
