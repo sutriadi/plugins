@@ -1,5 +1,5 @@
 Plugins Module for SLiMS
-Version 0.3 patch 1 build 17394804092011
+Version 15.1.2 build 17394804092011
 
 Copyright (c) 1431 H / 2010 M
 Indra Sutriadi Pipii (indra@sutriadi.web.id)
