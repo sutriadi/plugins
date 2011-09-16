@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS `plugins` (
   `plugin_name` varchar(250) NOT NULL,
   `plugin_author` varchar(250) NOT NULL,
   `plugin_version` varchar(50) NOT NULL,
+  `plugin_build` VARCHAR( 50 ) NOT NULL,
   `plugin_description` text NOT NULL,
   `plugin_type` int(1) NOT NULL,
   `plugin_install` varchar(150) NOT NULL,
@@ -20,8 +21,6 @@ CREATE TABLE IF NOT EXISTS `plugins_vars` (
   `value` blob NOT NULL,
   PRIMARY KEY (`name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
-ALTER TABLE `plugins` ADD `plugin_build` VARCHAR( 50 ) NOT NULL AFTER `plugin_version`;
 
 INSERT INTO `plugins_vars` (`name`, `value`) VALUE ('allowed_ip', '["127.0.0.1","::1","192.168.56.101"]');
 
