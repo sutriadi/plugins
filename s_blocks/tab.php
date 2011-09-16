@@ -1,6 +1,6 @@
 <?php
 /*
- *      del.php
+ *      tab.php
  *      
  *      Copyright 2011 Indra Sutriadi Pipii <indra@sutriadi.web.id>
  *      
@@ -26,4 +26,23 @@ if (!defined('MODULES_WEB_ROOT_DIR')) {
 
 ?>
 
+<!-- formulir mulai -->
+<?php
+	$subtitle = isset($subtitle) ? ' ' . $subtitle : '';
+	$title = sprintf('%s - %s', __('Plugins'), __('Blocks')) . $subtitle;
+	echo fs_render($title);
+?>
 
+<table cellspacing="0" cellpadding="3" style="width: 100%; background-color: #dcdcdc;">
+	<tr>
+		<td>
+			<input type="button" name="listTables" value="<?php echo __('List');?>" class="button" onclick="$('#mainContent').simbioAJAX('<?php echo $dir . "/" ;?>');" />
+			<input type="button" name="addTable" value="<?php echo __('Add Block');?>" class="button" onclick="$('#mainContent').simbioAJAX('<?php echo $dir . "/add.php" ;?>');" />
+			<!--
+			<input type="button" name="confTables" value="<?php echo __('Settings');?>" class="button" onclick="$('#mainContent').simbioAJAX('<?php echo $dir . "/settings.php" ;?>');" />
+			-->
+		</td>
+		<td align="right">
+		</td>
+	</tr>
+</table>

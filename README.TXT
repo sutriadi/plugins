@@ -1,5 +1,5 @@
 Plugins Module for SLiMS
-Version 15.1.2 build 17394804092011
+Version 3.15-2.1 build 14083116092011
 
 Copyright (c) 1431 H / 2010 M
 Indra Sutriadi Pipii (indra@sutriadi.web.id)
@@ -40,7 +40,14 @@ dari ./sutriadi-plugins-xxx menjadi ./plugins
 - hapus direktori plugins dari direktori ./admin/modules/
 - import data sql/uninstall.sql ke database
 
+# Hapus Data
+Tidak semua data di database dihapus ketika instalasi dihapus.
+Untuk menghapus secara permanen import data sql/remove.sql ke database
+
 CHANGELOG
+16.09.2011 (alpha)
+- penambahan submodul block dan theme
+
 03.09.2011
 - restrukturisasi direktori
 - penggunaan library untuk menyederhanakan dependensi

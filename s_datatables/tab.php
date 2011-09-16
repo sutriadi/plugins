@@ -29,7 +29,7 @@ if (!defined('MODULES_WEB_ROOT_DIR')) {
 <!-- formulir mulai -->
 <?php
 	$subtitle = isset($subtitle) ? ' ' . $subtitle : '';
-	$title = sprintf('%s - %s', __('Plugins'), __('Configure')) . $subtitle;
+	$title = sprintf('%s - %s', __('Plugins'), __('DataTables')) . $subtitle;
 	echo fs_render($title);
 ?>
 

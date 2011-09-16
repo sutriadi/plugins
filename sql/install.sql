@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS `plugins` (
   `plugin_name` varchar(250) NOT NULL,
   `plugin_author` varchar(250) NOT NULL,
   `plugin_version` varchar(50) NOT NULL,
-  `plugin_build` VARCHAR( 50 ) NOT NULL,
+  `plugin_build` VARCHAR( 50 ) DEFAULT 0,
   `plugin_description` text NOT NULL,
   `plugin_type` int(1) NOT NULL,
   `plugin_install` varchar(150) NOT NULL,
@@ -37,4 +37,27 @@ CREATE TABLE IF NOT EXISTS `plugins_dtables` (
   `windowed` tinyint(1) NOT NULL DEFAULT '1',
   `sort` blob NOT NULL,
   PRIMARY KEY (`table`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `plugins_blocks` (
+  `idblock` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `plugin` varchar(100) NOT NULL,
+  `delta` varchar(32) NOT NULL,
+  `theme` varchar(64) NOT NULL,
+  `region` varchar(64) NOT NULL,
+  `weight` tinyint(4) NOT NULL,
+  `title` varchar(64) NOT NULL,
+  `classes` text NOT NULL,
+  PRIMARY KEY (`idblock`),
+  KEY `list` (`idblock`,`plugin`,`delta`,`theme`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `plugins_blocks_custom` (
+  `block` varchar(32) NOT NULL,
+  `desc` varchar(128) NOT NULL,
+  `title` varchar(64) NOT NULL,
+  `code` blob NOT NULL,
+  `filter` enum('text','simple','full','php') NOT NULL,
+  PRIMARY KEY (`block`),
+  KEY `desc` (`desc`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;

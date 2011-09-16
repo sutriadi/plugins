@@ -609,9 +609,10 @@ function ip_info($detail = true)
 
 /*
  * 
- * name: unknown
- * @param
- * @return
+ * name: fs_render
+ * @param $title
+ * @param $params
+ * @return string html
  */
 function fs_render($title, $params = array())
 {
@@ -637,4 +638,161 @@ function fs_render($title, $params = array())
 	$fs .= '</div>';
 	$fs .= '</fieldset>';
 	return $fs;
+}
+
+function drupal_parse_info_file($filename)
+{
+	$info = array();
+	$constants = get_defined_constants();
+
+	if ( ! file_exists($filename))
+	{
+		return $info;
+	}
+	
+	$data = file_get_contents($filename);
+	if (preg_match_all('
+	@^\s*								# Start at the beginning of a line, ignoring leading whitespace
+	((?:
+		[^=;\[\]]|						# Key names cannot contain equal signs, semi-colons or square brackets,
+		\[[^\[\]]*\]					# unless they are balanced and not nested
+	)+?)
+	\s*=\s*								# Key/value pairs are separated by equal signs (ignoring white-space)
+	(?:
+		("(?:[^"]|(?<=\\\\)")*")|		# Double-quoted string, which may contain slash-escaped quotes/slashes
+		(\'(?:[^\']|(?<=\\\\)\')*\')|	# Single-quoted string, which may contain slash-escaped quotes/slashes
+		([^\r\n]*?)						# Non-quoted string
+	)\s*$								# Stop at the next end of a line, ignoring trailing whitespace
+	@msx', $data, $matches, PREG_SET_ORDER))
+    {
+		foreach ($matches as $match)
+		{
+			// Fetch the key and value string
+			$i = 0;
+			foreach (array('key', 'value1', 'value2', 'value3') as $var)
+			{
+				$$var = isset($match[++$i]) ? $match[$i] : '';
+			}
+			$value = stripslashes(substr($value1, 1, -1)) . stripslashes(substr($value2, 1, -1)) . $value3;
+
+			// Parse array syntax
+			$keys = preg_split('/\]?\[/', rtrim($key, ']'));
+			$last = array_pop($keys);
+			$parent = &$info;
+
+			// Create nested arrays
+			foreach ($keys as $key)
+			{
+				if ($key == '')
+				{
+					$key = count($parent);
+				}
+				if (!isset($parent[$key]) || !is_array($parent[$key]))
+				{
+					$parent[$key] = array();
+				}
+				$parent = &$parent[$key];
+			}
+
+			// Handle PHP constants.
+			if (isset($constants[$value]))
+			{
+				$value = $constants[$value];
+			}
+
+			// Insert actual value
+			if ($last == '')
+			{
+				$last = count($parent);
+			}
+			$parent[$last] = $value;
+		}
+	}
+	return $info;
+}
+
+/*
+ * 
+ * name: drupal_eval
+ * @param $code string
+ * @return $output
+ */
+function drupal_eval($code)
+{
+	global $conf, $dbs;
+	ob_start();
+	print eval('?>' . $code);
+	$output = ob_get_contents();
+	ob_end_clean();
+	return $output;
+}
+
+/*
+ * 
+ * name: php_rem
+ * @param $str string
+ * @return string
+ */
+function php_rem($str)
+{
+	$str = str_replace(array('<?php', '?>'), '', $str);
+	$str = str_replace('<?', '', $str);
+	return $str;
+}
+
+/*
+ * 
+ * name: nodir
+ * @param none
+ * @return array
+ */
+function nodir()
+{
+	return array('.', '..');
+}
+
+/*
+ * 
+ * name: relist_avtheme
+ * @param none
+ * @return none
+ */
+function relist_avtheme()
+{
+	if (isset($_SESSION['opac_themes']))
+	{
+		unset($_SESSION['opac_themes']);
+		list_avtheme();
+	}
+}
+
+/*
+ * 
+ * name: list_avtheme
+ * @param none
+ * @return array
+ */
+function list_avtheme()
+{
+	global $sysconf;
+	
+	$opac_themes = array();
+	$nodir = nodir();
+	if ( ! isset($_SESSION['opac_themes']))
+	{
+		$tpl_dir = SENAYAN_BASE_DIR . $sysconf['template']['dir'] . '/fatin/sub/';
+		$dirs = scandir($tpl_dir);
+		sort($dirs);
+		foreach ($dirs as $file)
+		{
+			$info_file = $tpl_dir . $file . '/tpl.info';
+			if ( ! in_array($file, $nodir) AND is_dir($tpl_dir . $file) AND file_exists($info_file))
+			{
+				$info = drupal_parse_info_file($info_file);
+				$opac_themes[$file] = isset($info['name']) ? $info['name'] : $file;
+			}
+		}
+		$_SESSION['opac_themes'] = $opac_themes;
+	}
+	return $_SESSION['opac_themes'];
 }

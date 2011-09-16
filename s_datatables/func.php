@@ -55,35 +55,6 @@ function table_get($table, $mode = 'array')
 
 /*
  * 
- * name: drupal_eval
- * @param $code string
- * @return $output
- */
-function drupal_eval($code)
-{
-	global $conf, $dbs;
-	ob_start();
-	print eval('?>' . $code);
-	$output = ob_get_contents();
-	ob_end_clean();
-	return $output;
-}
-
-/*
- * 
- * name: php_rem
- * @param $str string
- * @return string
- */
-function php_rem($str)
-{
-	$str = str_replace(array('<?php', '?>'), '', $str);
-	$str = str_replace('<?', '', $str);
-	return $str;
-}
-
-/*
- * 
  * name: cols_get
  * @param $table
  * @param $mode

@@ -26,19 +26,48 @@ if (!defined('MODULES_WEB_ROOT_DIR')) {
 
 list($host, $dir, $file) = scinfo();
 $ips = implode(" ", json_decode(variable_get('allowed_ip', '["127.0.0.1", "::1"]'), true));
+$opac_theme = variable_get('opac_theme', 'base');
 $ui_theme = variable_get('ui_theme', 'base');
 $ui_css_version = variable_get('ui_css_version', '');
+$nodir = array('.', '..');
+
+require(SENAYAN_BASE_DIR . 'template/fatin/php/function.php');
+$list_avtheme = list_avtheme();
+$opt_opac_theme = '';
+foreach ($list_avtheme as $theme_dir => $theme_name)
+{
+	$selected = ($opac_theme == $theme_dir) ? 'selected' : '';
+	$opt_opac_theme .= sprintf('<option value="%s" %s>%s</option>',
+		$theme_dir,
+		$selected,
+		$theme_name
+	);
+}
+
+$dir_ui_theme = __DIR__ . '/../library/ui/css/';
+$dirs_ui_theme = scandir($dir_ui_theme);
+sort($dirs_ui_theme);
+$opt_ui_theme = '';
+foreach ($dirs_ui_theme as $file_ui_theme)
+{
+	if ( ! in_array($file_ui_theme, $nodir) AND is_dir($dir_ui_theme . $file_ui_theme))
+	{
+		$selected = ($ui_theme == $file_ui_theme) ? 'selected' : '';
+		$opt_ui_theme .= sprintf('<option value="%s" %s>%s</option>',
+			$file_ui_theme,
+			$selected,
+			$file_ui_theme
+		);
+	}
+}
 
 ?>
 
 <!-- formulir mulai -->
-<fieldset class="menuBox" style="font-weight: normal;">
-	<div style="padding: 3px; padding-left: 59px; background: url(<?php echo MODULES_WEB_ROOT_DIR;?>/plugins/logo.png) no-repeat -10px 5px;">
-		<strong>Plugins - <?php echo __('Configure');?></strong>
-		<hr />
-		<?php echo __('You access this page from IP address');?>: <strong><?php echo remote_addr();?></strong>.
-	</div>
-</fieldset>
+<?php
+	$title = sprintf('%s - %s', __('Plugins'), __('Configure'));
+	echo fs_render($title, array('ip_detail' => false));
+?>
 
 <form name="mainForm" id="mainForm" method="POST" action="<?php echo $dir . "/setup.php";?>" target="submitExec">
 	<table cellspacing="0" cellpadding="3" style="width: 100%; background-color: #dcdcdc;">
@@ -67,15 +96,13 @@ $ui_css_version = variable_get('ui_css_version', '');
 			<td class="alterCell" style="font-weight: bold;"><label for="opac_theme" style="cursor: pointer;"><?php echo __('OPAC Plugin Theme');?></label></td>
 			<td class="alterCell" style="font-weight: bold; width: 1%;">:</td>
 			<td class="alterCell2">
-				<select id="opac_theme" name="opac_theme">
-					<option value="base">Base</option>
-				</select>
+				<select id="opac_theme" name="opac_theme"><?php echo $opt_opac_theme;?></select>
 				<br />
-				<span><?php echo __('Not implemented yet!');?></span>
+				<span><?php echo __('Select OPAC Theme which compatible with Fatin template engine!');?></span>
 			</td>
 		</tr>
 		<tr valign="top">
-			<td class="alterCell" style="font-weight: bold;"><label for="opac_theme" style="cursor: pointer;"><?php echo __('OPAC Frontpage');?></label></td>
+			<td class="alterCell" style="font-weight: bold;"><label for="opac_frontpage" style="cursor: pointer;"><?php echo __('OPAC Frontpage');?></label></td>
 			<td class="alterCell" style="font-weight: bold; width: 1%;">:</td>
 			<td class="alterCell2">
 				<input type="text" id="opac_frontpage" name="opac_frontpage" />
@@ -90,9 +117,9 @@ $ui_css_version = variable_get('ui_css_version', '');
 			<td class="alterCell" style="font-weight: bold;"><label for="ui_theme" style="cursor: pointer;"><?php echo __('JQuery UI Theme');?></label></td>
 			<td class="alterCell" style="font-weight: bold; width: 1%;">:</td>
 			<td class="alterCell2">
-				<input type="text" id="ui_theme" name="ui_theme" value="<?php echo $ui_theme;?>" />
+				<select id="ui_theme" name="ui_theme"><?php echo $opt_ui_theme;?></select>
 				<br />
-				<span><?php echo __('Entry jQuery-UI Theme for new window plugins theme.');?></span>
+				<span><?php echo __('Select jQuery-UI Theme for new window plugins theme.');?></span>
 			</td>
 		</tr>
 		<tr valign="top">

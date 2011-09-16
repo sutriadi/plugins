@@ -1,6 +1,6 @@
 <?php
 /*
- *      index.php
+ *      add.php
  *      
  *      Copyright 2011 Indra Sutriadi Pipii <indra@sutriadi.web.id>
  *      
@@ -20,7 +20,6 @@
  *      MA 02110-1301, USA.
  */
 
-// key to authenticate
 define('INDEX_AUTH', '1');
 
 if (!defined('SENAYAN_BASE_DIR')) {
@@ -34,7 +33,6 @@ define('MODPLUGINS_WEB_ROOT_DIR', MODULES_WEB_ROOT_DIR . 'plugins/');
 
 require SENAYAN_BASE_DIR.'admin/default/session_check.inc.php';
 
-// privileges checking
 $can_read = utility::havePrivilege('plugins', 'r');
 $can_write = utility::havePrivilege('plugins', 'w');
 
@@ -43,11 +41,34 @@ if ( ! $can_read || ! $can_write)
 	die(sprintf('<div class="errorBox">%s</div>', __('You dont have enough privileges to view this section')));
 }
 
-require('../func.php');
+require('../func.php'); // include plugin function
+require('./func.php'); // include dataTables function
 
 checksess();
+checkip();
 checkref();
 
-if ($can_write) include('./form.php');
+list($host, $dir, $file) = scinfo();
+$ips = implode(" ", json_decode(variable_get('allowed_ip', '["127.0.0.1", "::1"]'), true));
+
+if ($can_write)
+{
+	if ($_GET AND isset($_GET['cols']))
+	{
+		switch ($_GET['cols'])
+		{
+			case "sort":
+				$subtitle = ' - ' . __('Sort Regions');
+				break;
+			case "add":
+			default:
+				$subtitle = ' - ' . __('Additional Class');
+		}
+	}
+	else if (isset($_GET['action']) AND $_GET['action'] == 'del')
+		$subtitle = ' - ' . __('Delete');
+	include('./tab.php');
+	include('./form.php');
+}
 
 exit();
