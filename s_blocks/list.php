@@ -24,6 +24,7 @@ if (!defined('MODULES_WEB_ROOT_DIR')) {
 	exit();
 }
 
+$themes = list_avtheme();
 $blocks = block_all_list();
 
 $default_regions = block_default_regions();
@@ -64,9 +65,24 @@ foreach ($default_regions as $region => $region_name)
 		}
 	}
 }
+
+$theme_list = array();
+foreach ($themes as $theme_key => $theme_name)
+{
+	$theme_list[] = sprintf('<a href="%s">%s</a>', $dir . '/?theme=' . $theme_key, $theme_name);
+}
+$theme_list = sprintf('%s : ', __('Theme')) . implode(" | ", $theme_list);
+
 ?>
 <form name="mainForm" id="mainForm" enctype="multipart/form-data" method="POST" action="<?php echo $dir . "/setup.php?sort"; ?>" target="submitExec">
 	<table cellspacing="0" cellpadding="3" style="width: 100%; background-color: #dcdcdc;">
+		<tr>
+			<td>
+				<?php echo $theme_list;?>
+			</td>
+			<td align="right">
+			</td>
+		</tr>
 		<tr>
 			<td>
 				<input type="submit" name="saveData" value="<?php echo __('Save');?>" class="button" />

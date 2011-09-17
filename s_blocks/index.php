@@ -51,7 +51,7 @@ checkref();
 
 list($host, $dir, $file) = scinfo();
 $ips = implode(" ", json_decode(variable_get('allowed_ip', '["127.0.0.1", "::1"]'), true));
-$theme = variable_get('opac_theme');
+$theme = isset($_GET['theme']) ? $_GET['theme'] : variable_get('opac_theme');
 $theme_dir = SENAYAN_BASE_DIR . $sysconf['template']['dir'] . '/fatin/sub/' . $theme;
 
 if ($can_write) include('./tab.php');

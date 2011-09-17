@@ -762,8 +762,8 @@ function relist_avtheme()
 	if (isset($_SESSION['opac_themes']))
 	{
 		unset($_SESSION['opac_themes']);
-		list_avtheme();
 	}
+	return list_avtheme();
 }
 
 /*
