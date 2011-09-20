@@ -602,7 +602,7 @@ function ip_info($detail = true)
 	if ($detail === true)
 	{
 		$rs = sprintf(': <strong>%s</strong>', implode(', ', json_decode(variable_get('allowed_ip', '["127.0.0.1", "::1"]'), true)));
-		$info .= __(' This page can accessed from following IP addresses') . $rs;
+		$info .= __(' This page can be accessed from the following IP addresses') . $rs;
 	}
 	return $info;
 }

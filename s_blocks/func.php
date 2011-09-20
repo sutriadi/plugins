@@ -46,7 +46,7 @@ function block_custom_get($block, $mode = 'array')
 			$row = (object) $rows->fetch_assoc();
 			$block = $row->block;
 			$desc = $row->desc;
-			$title = $row->title;
+			$title = stripslashes($row->title);
 			$code = stripslashes($row->code);
 			$filter = $row->filter;
 		}
@@ -56,6 +56,36 @@ function block_custom_get($block, $mode = 'array')
 		return $num_rows;
 }
 
+function block_settings_get($block, $delta)
+{
+	global $dbs, $theme;
+	
+	$sql = sprintf("SELECT `plugin`, `delta`, `region`, `weight`, `title`, `classes` "
+		. "FROM `plugins_blocks` WHERE `plugin` = '%s' AND `delta` = '%s' AND `theme` = '%s'",
+		$block,
+		$delta,
+		$theme
+	);
+	$plugin = '';
+	$delta = '';
+	$region = '';
+	$weight = '';
+	$title = '';
+	$classes = '';
+	$rows = $dbs->query($sql);
+	$num_rows = $rows->num_rows;
+	if ($num_rows > 0)
+	{
+		$row = (object) $rows->fetch_assoc();
+		$plugin = $row->plugin;
+		$delta = $row->delta;
+		$region = $row->region;
+		$weight = $row->weight;
+		$title = stripslashes($row->title);
+		$classes = $row->classes;
+	}
+	return array($plugin, $delta, $region, $weight, $title, $classes);
+}
 /*
  * 
  * name: block_default_regions
@@ -65,13 +95,13 @@ function block_custom_get($block, $mode = 'array')
 function block_default_regions()
 {
 	return array(
-		'none' => __('Disabled'),
-		'left' => __('Left Sidebar'),
-		'right' => __('Right Sidebar'),
 		'header' => __('Header'),
-		'footer' => __('Footer'),
+		'left' => __('Left Sidebar'),
 		'top-node' => __('Content Top'),
 		'bottom-node' => __('Content Bottom'),
+		'right' => __('Right Sidebar'),
+		'footer' => __('Footer'),
+		'none' => __('Disabled'),
 	);
 }
 
@@ -107,7 +137,7 @@ function block_get_regions()
  * @param
  * @return
  */
-function block_all_list()
+function block_all_list($return = false)
 {
 	global $dbs, $theme, $theme_dir;
 	
@@ -144,6 +174,7 @@ function block_all_list()
 				$preblocks[$row['plugin']][$row['delta']]['desc'] => array(
 					'block' => $row['plugin'],
 					'delta' => $row['delta'],
+					'theme' => $row['theme'],
 					'weight' => isset($row['weight']) ? $row['weight'] : 0,
 					'desc' => $preblocks[$row['plugin']][$row['delta']]['desc'],
 				)
@@ -163,6 +194,16 @@ function block_all_list()
 					$blocks['none'] = $block_array;
 			}
 		}
+	}
+	else if ($num_rows == 0 AND $return === false)
+	{
+		$sqli = sprintf("INSERT INTO `plugins_blocks` "
+			. "(`plugin`, `delta`, `theme`, `region`, `weight`) "
+			. "(SELECT `plugin`, `delta`, '%s', `region`, `weight` FROM plugins_blocks WHERE `theme` = 'base')",
+			$theme
+		);
+		$dbs->query($sqli);
+		$blocks = block_all_list(true);
 	}
 	return $blocks;
 }
@@ -212,7 +253,7 @@ function set_action_links($block)
 {
 	global $dir;
 	
-	$params = 'block=' . $block['block'] . '&delta=' . $block['delta'];
+	$params = 'block=' . $block['block'] . '&delta=' . $block['delta'] . '&theme=' . $block['theme'];
 	$links = sprintf('<a href="%s">%s</a>',
 		$dir . '/add.php?' . $params,
 		__('Configure')

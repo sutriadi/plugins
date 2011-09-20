@@ -55,8 +55,16 @@ $theme_base_url = $dir . '../../../../../' . $sysconf['template']['dir'] . '/fat
 $theme_dir = $theme_base_dir . $theme;
 
 $themes = (isset($_GET['act']) AND $_GET['act'] == 'reindex') ? relist_avtheme() : list_avtheme();
+if (isset($_GET['act']) AND $_GET['act'] == 'configure')
+	$subtitle = ' - ' . __('Configure') . sprintf(' : <em>%s</em>', $themes[$theme]);
 
-if ($can_write) include('./tab.php');
-if ($can_write) include('./list.php');
+if ($can_write)
+{
+	include('./tab.php');
+	if (isset($_GET['act']) AND $_GET['act'] == 'configure')
+		include('./form.php');
+	else
+		include('./list.php');
+}
 
 exit();

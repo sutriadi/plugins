@@ -20,7 +20,6 @@
  *      MA 02110-1301, USA.
  */
 
-
 define('INDEX_AUTH', '1');
 
 if (!defined('SENAYAN_BASE_DIR')) {
@@ -49,14 +48,11 @@ require('./func.php');
 if ($_POST)
 {
 	list($host, $dir, $file) = scinfo();
-	$theme = variable_get('opac_theme');
+	$theme = (isset($_GET['theme']) AND ! empty($_GET['theme'])) ? $_GET['theme'] : variable_get('opac_theme');
 	if (isset($_GET['sort']))
 	{
 		$alert = __('Blocks configuration has not been saved!');
-		$script = "parent.$('#mainContent').simbioAJAX('". $dir . "/');";
-/*
-		$script = "";
-*/
+		$script = "parent.$('#mainContent').simbioAJAX('". $dir . "/?theme=" . $theme . "');";
 		unset($_POST['saveData']);
 		if (count($_POST) > 0)
 		{
@@ -82,12 +78,57 @@ if ($_POST)
 			$alert = __('Blocks configuration has been saved!');
 		}
 	}
+	else if (isset($_GET['plugin']) AND isset($_GET['delta']) AND isset($_GET['theme']))
+	{
+		$get = (object) $_GET;
+		$post = (object) $_POST;
+		unset($post->saveData);
+		$block = ! empty($get->plugin) ? $get->plugin : 'block';
+		$delta = ! empty($get->delta) ? $get->delta : '';
+		$theme = ! empty($get->theme) ? $get->theme : variable_get('opac_theme');
+		$post->title = isset($post->title) ? addslashes(trim($post->title)) : '';
+		$post->region = isset($post->region) ? $post->region : 'none';
+		$post->weight = isset($post->weight) ? $post->weight : 0;
+		$post->classes = isset($post->classes) ? trim($post->classes) : '';
+/*
+		$post->classes = ( ! preg_match("/^([-a-z0-9_-])+$/", $post->classes)) ? $post->classes : '';
+*/
+		if (isset($post->desc) AND isset($post->code) AND isset($post->filter))
+		{
+			$post->desc = isset($post->desc) ? trim($post->desc) : '';
+			$post->code = isset($post->code) ? addslashes(trim($post->code)) : '';
+			$sql = sprintf("UPDATE `plugins_blocks_custom` "
+				. "SET `desc` = '%s', `code` = '%s', `filter` = '%s' "
+				. "WHERE `block` = '%s'",
+				$post->desc,
+				$post->code,
+				$post->filter,
+				$delta
+			);
+			$dbs->query($sql);
+		}
+		$sql = sprintf("UPDATE `plugins_blocks` "
+			. "SET `region` = '%s', `weight` = '%s', `title` = '%s', `classes` = '%s' "
+			. "WHERE `plugin` = '%s' AND `delta` = '%s' AND `theme` = '%s'",
+			$post->region,
+			$post->weight,
+			$post->title,
+			$post->classes,
+			$block,
+			$delta,
+			$theme
+		);
+		$dbs->query($sql);
+		$alert = __('Blocks configuration has been saved!');
+		$script = "parent.$('#mainContent').simbioAJAX('". $dir . "/?theme=" . $theme . "');";
+	}
 	else
 	{
 		$post = (object) $_POST;
 		$post->desc = isset($post->desc) ? trim($post->desc) : '';
-		$post->code = isset($post->code) ? trim($post->code) : '';
+		$post->code = isset($post->code) ? addslashes(trim($post->code)) : '';
 		$post->block = trim($post->block);
+		$post->title = isset($post->title) ? addslashes(trim($post->title)) : '';
 		$valid = ( ! preg_match("/^([-a-z0-9_-])+$/", $post->block)) ? FALSE : TRUE;
 		if ( ! $_GET AND ($valid === FALSE || empty($post->desc) || empty($post->code)))
 		{

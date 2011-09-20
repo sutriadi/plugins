@@ -24,7 +24,6 @@ if (!defined('MODULES_WEB_ROOT_DIR')) {
 	exit();
 }
 
-
 $theme_list = '';
 $row = 1;
 $bgtr = array(0 => 'lightgray', 1 => 'white');

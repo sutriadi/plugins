@@ -1,6 +1,6 @@
 <?php
 /*
- *      add.php
+ *      setup.php
  *      
  *      Copyright 2011 Indra Sutriadi Pipii <indra@sutriadi.web.id>
  *      
@@ -29,39 +29,44 @@ if (!defined('SENAYAN_BASE_DIR')) {
     require SENAYAN_BASE_DIR.'admin/default/session.inc.php';
 }
 
-define('MODPLUGINS_WEB_ROOT_DIR', MODULES_WEB_ROOT_DIR . 'plugins/');
-
 require SENAYAN_BASE_DIR.'admin/default/session_check.inc.php';
 
+// privileges checking
 $can_read = utility::havePrivilege('plugins', 'r');
 $can_write = utility::havePrivilege('plugins', 'w');
 
-if ( ! $can_read || ! $can_write)
-{
+if (!$can_read) {
 	die(sprintf('<div class="errorBox">%s</div>', __('You dont have enough privileges to view this section')));
 }
 
-require('../func.php'); // include plugin function
-require('./func.php'); // include dataTables function
-
-checksess();
+require('../func.php');
 checkip();
 checkref();
 
+require('./func.php');
+
 list($host, $dir, $file) = scinfo();
-$ips = implode(" ", json_decode(variable_get('allowed_ip', '["127.0.0.1", "::1"]'), true));
 
-if ($can_write)
-{
-	if ($_GET AND isset($_GET['block']) AND isset($_GET['delta']))
-		$subtitle = ' - ' . __('Configure');
-	else if (isset($_GET['act']) AND $_GET['act'] == 'del')
-		$subtitle = ' - ' . __('Delete');
+if ($_POST)
+{	
+	if (isset($_POST['theme']) AND isset($_GET['theme']) AND $_POST['theme'] == $_GET['theme'])
+		$theme = $_GET['theme'];
+	else
+		$theme = variable_get('opac_theme');
+
+	$alert = __('Theme configuration has been saved!');
+	$script = "parent.$('#mainContent').simbioAJAX('". $dir . "/?act=configure&theme=" . $theme . "');";
 	
-	$theme = isset($_GET['theme']) ? $_GET['theme'] : variable_get('opac_theme');
-	
-	include('./tab.php');
-	include('./form.php');
+	$key = 'theme_' . $theme . '_settings';
+	$value = array();
+	unset($_POST['theme']);
+	foreach ($_POST as $post => $value)
+	{
+		$value[$post] = $value;
+	}
+	$value = serialize($value);
+	variable_set($key, $value);
+
+	echo "<html><head><script type=\"text/javascript\">alert('$alert');$script</script></head><body></body></html>";
 }
-
 exit();

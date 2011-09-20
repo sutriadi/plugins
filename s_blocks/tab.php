@@ -36,7 +36,7 @@ if (!defined('MODULES_WEB_ROOT_DIR')) {
 <table cellspacing="0" cellpadding="3" style="width: 100%; background-color: #dcdcdc;">
 	<tr>
 		<td>
-			<input type="button" name="listBlocks" value="<?php echo __('List');?>" class="button" onclick="$('#mainContent').simbioAJAX('<?php echo $dir . "/" ;?>');" />
+			<input type="button" name="listBlocks" value="<?php echo __('List');?>" class="button" onclick="$('#mainContent').simbioAJAX('<?php echo $dir . "/?theme=" . $theme ;?>');" />
 			<input type="button" name="addBlock" value="<?php echo __('Add Block');?>" class="button" onclick="$('#mainContent').simbioAJAX('<?php echo $dir . "/add.php" ;?>');" />
 			<!--
 			<input type="button" name="confTables" value="<?php echo __('Settings');?>" class="button" onclick="$('#mainContent').simbioAJAX('<?php echo $dir . "/settings.php" ;?>');" />
