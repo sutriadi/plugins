@@ -253,15 +253,17 @@ function set_action_links($block)
 {
 	global $dir;
 	
-	$params = 'block=' . $block['block'] . '&delta=' . $block['delta'] . '&theme=' . $block['theme'];
+	$block = (object) $block;
+	
+	$params = 'block=' . $block->block . '&delta=' . $block->delta . '&theme=' . $block->theme;
 	$links = sprintf('<a href="%s">%s</a>',
 		$dir . '/add.php?' . $params,
 		__('Configure')
 	);
-	if ($block['block'] == 'block')
+	if ($block->block == 'block')
 	{
 		$links .= sprintf(' <a href="%s">%s</a>',
-			$dir . '/add.php?act=del',
+			$dir . '/add.php?act=del&' . $params,
 			__('Delete')
 		);
 	}

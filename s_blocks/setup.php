@@ -122,6 +122,25 @@ if ($_POST)
 		$alert = __('Blocks configuration has been saved!');
 		$script = "parent.$('#mainContent').simbioAJAX('". $dir . "/?theme=" . $theme . "');";
 	}
+	else if (isset($_GET['act']) AND $_GET['act'] == 'del')
+	{
+		$alert = __('Block has not been deleted!');
+		if (isset($_GET['delta']))
+		{
+			$sql = sprintf("DELETE FROM `plugins_blocks_custom` WHERE `block` = '%s'",
+				$_GET['delta']
+			);
+			$dbs->query($sql);
+			
+			$sql = sprintf("DELETE FROM `plugins_blocks` WHERE `plugin` = 'block' AND `delta` = '%s'",
+				$_GET['delta']
+			);
+			$dbs->query($sql);
+			
+			$alert = __('Block has been deleted!');
+		}
+		$script = "parent.$('#mainContent').simbioAJAX('". $dir . "/?theme=" . $theme . "');";
+	}
 	else
 	{
 		$post = (object) $_POST;

@@ -64,6 +64,12 @@ foreach ($default_regions as $region => $region_name)
 			}
 		}
 	}
+	else
+	{
+		$block_list .= sprintf('<tr valign=top><th colspan="4">%s</th></tr>', $region_name);
+		$block_list .= sprintf('<tr valign=top><td colspan="4" class="alterCell2">%s</td></tr>', __('There are no blocks listed'));
+	}
+
 }
 
 $theme_list = array();
