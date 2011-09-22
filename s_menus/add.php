@@ -1,6 +1,6 @@
 <?php
 /*
- *      add_cat.php
+ *      add.php
  *      
  *      Copyright 2011 Indra Sutriadi Pipii <indra@sutriadi.web.id>
  *      
@@ -38,7 +38,7 @@ $can_write = utility::havePrivilege('plugins', 'w');
 
 if ( ! $can_read || ! $can_write)
 {
-	die('<div class="errorBox">You dont have enough privileges to view this section</div>');
+	die(sprintf('<div class="errorBox">%s</div>', __('You dont have enough privileges to view this section')));
 }
 
 require('../func.php'); // include plugin function
@@ -53,11 +53,34 @@ $ips = implode(" ", json_decode(variable_get('allowed_ip', '["127.0.0.1", "::1"]
 
 if ($can_write)
 {
+	if (isset($_GET['type']))
+	{
+		switch ($_GET['type'])
+		{
+			case "item":
+				$subtitle = ' - ' . __('Add Menu Item');
+				break;
+			case "menu":
+			default:
+				$subtitle = ' - ' . __('Add Menu');
+		}
+	}
+	else if (isset($_GET['menu']) AND isset($_GET['item']))
+		$subtitle = ' - ' . __('Edit Menu Item');
+	else if (isset($_GET['menu']) AND ! isset($_GET['item']))
+		$subtitle = ' - ' . __('Edit Menu');
+	else if (isset($_GET['act']) AND $_GET['act'] == 'del')
+	{
+		if (isset($_GET['menu']) AND isset($_GET['item']))
+			$subtitle = ' - ' . __('Delete Menu Item');
+		else
+			$subtitle = ' - ' . __('Delete Menu');
+	}
+	
+	$theme = isset($_GET['theme']) ? $_GET['theme'] : variable_get('opac_theme');
+	
 	include('./tab.php');
-	if ($_GET AND isset($_GET['action']) AND $_GET['action'] == 'del')
-		include('./cat_del.php');
-	else
-		include('./cat_add.php');
+	include('./form.php');
 }
 
 exit();
