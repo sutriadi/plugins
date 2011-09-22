@@ -25,9 +25,7 @@
 $menu[] = array('Header', __('Plugins'));
 $menu[] = array(__('Plugins'), MODULES_WEB_ROOT_DIR.'plugins/index.php', __('View Available Plugins'));
 $menu[] = array(__('Configure'), MODULES_WEB_ROOT_DIR.'plugins/s_conf/', __('Configure Plugins'));
-/*
 $menu[] = array(__('Menu'), MODULES_WEB_ROOT_DIR.'plugins/s_menus/', __('Configure Menus'));
-*/
 $menu[] = array(__('Theme'), MODULES_WEB_ROOT_DIR.'plugins/s_themes/', __('Configure Themes'));
 $menu[] = array(__('Block'), MODULES_WEB_ROOT_DIR.'plugins/s_blocks/', __('Configure Blocks'));
 $menu[] = array(__('DataTables'), MODULES_WEB_ROOT_DIR.'plugins/s_datatables/', __('Configure DataTables'));

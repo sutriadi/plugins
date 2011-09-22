@@ -25,7 +25,6 @@ if (!defined('MODULES_WEB_ROOT_DIR')) {
 }
 
 $get = (isset($_GET) AND isset($_GET['edit'])) ? true : false;
-list($path, $label, $desc) = ($get === true) ? item_get($_GET['edit']) : array('', '', '');
 
 ?>
 

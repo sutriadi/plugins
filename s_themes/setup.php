@@ -48,7 +48,7 @@ require('./func.php');
 list($host, $dir, $file) = scinfo();
 
 if ($_POST)
-{	
+{
 	if (isset($_POST['theme']) AND isset($_GET['theme']) AND $_POST['theme'] == $_GET['theme'])
 		$theme = $_GET['theme'];
 	else

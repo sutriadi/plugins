@@ -208,6 +208,12 @@ function block_all_list($return = false)
 	return $blocks;
 }
 
+/*
+ * 
+ * name: regions_get
+ * @param
+ * @return
+ */
 function regions_get($block)
 {
 	global $dbs;
@@ -220,6 +226,12 @@ function regions_get($block)
 	}
 }
 
+/*
+ * 
+ * name: set_region_options
+ * @param $default string
+ * @return string html
+ */
 function set_region_options($default = 'none')
 {
 	global $default_regions;
@@ -233,22 +245,12 @@ function set_region_options($default = 'none')
 
 }
 
-function set_weight_options($default = 0)
-{
-	$min_weight = -50;
-	$max_weight = 50;
-	$block_weight_options = '';
-	if (empty($default) || trim($default) === '')
-		$default = 0;
-	for ($n = $min_weight; $n <= $max_weight; $n++)
-	{
-		$selected = ($default == $n) ? "selected" : "";
-		$block_weight_options .= '<option value="' . $n . '" ' . $selected . '>' . $n . '</option>';
-	}
-	return $block_weight_options;
-
-}
-
+/*
+ * 
+ * name: set_action_links
+ * @param $block string
+ * @return string html
+ */
 function set_action_links($block)
 {
 	global $dir;

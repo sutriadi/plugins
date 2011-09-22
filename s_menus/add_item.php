@@ -19,3 +19,45 @@
  *      Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  *      MA 02110-1301, USA.
  */
+
+define('INDEX_AUTH', '1');
+
+if (!defined('SENAYAN_BASE_DIR')) {
+    // main system configuration
+    require '../../../../sysconfig.inc.php';
+    // start the session
+    require SENAYAN_BASE_DIR.'admin/default/session.inc.php';
+}
+
+define('MODPLUGINS_WEB_ROOT_DIR', MODULES_WEB_ROOT_DIR . 'plugins/');
+
+require SENAYAN_BASE_DIR.'admin/default/session_check.inc.php';
+
+$can_read = utility::havePrivilege('plugins', 'r');
+$can_write = utility::havePrivilege('plugins', 'w');
+
+if ( ! $can_read || ! $can_write)
+{
+	die('<div class="errorBox">You dont have enough privileges to view this section</div>');
+}
+
+require('../func.php'); // include plugin function
+require('./func.php'); // include menu function
+
+checksess();
+checkip();
+checkref();
+
+list($host, $dir, $file) = scinfo();
+$ips = implode(" ", json_decode(variable_get('allowed_ip', '["127.0.0.1", "::1"]'), true));
+
+if ($can_write)
+{
+	include('./tab.php');
+	if ($_GET AND isset($_GET['action']) AND $_GET['action'] == 'del')
+		include('./item_del.php');
+	else
+		include('./item_add.php');
+}
+
+exit();

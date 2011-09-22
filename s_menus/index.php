@@ -44,6 +44,7 @@ if ( ! $can_read || ! $can_write)
 }
 
 require('../func.php');
+require('./func.php');
 
 checksess();
 checkip();
@@ -53,6 +54,6 @@ list($host, $dir, $file) = scinfo();
 $ips = implode(" ", json_decode(variable_get('allowed_ip', '["127.0.0.1", "::1"]'), true));
 
 if ($can_write) include('./tab.php');
-if ($can_write) include('./list_cat.php');
+if ($can_write) include('./list.php');
 
 exit();

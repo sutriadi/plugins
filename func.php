@@ -796,3 +796,25 @@ function list_avtheme()
 	}
 	return $_SESSION['opac_themes'];
 }
+
+/*
+ * 
+ * name: set_weight_options
+ * @param $default number
+ * @return string html
+ */
+function set_weight_options($default = 0)
+{
+	$min_weight = -50;
+	$max_weight = 50;
+	$weight_options = '';
+	if (empty($default) || trim($default) === '')
+		$default = 0;
+	for ($n = $min_weight; $n <= $max_weight; $n++)
+	{
+		$selected = ($default == $n) ? "selected" : "";
+		$weight_options .= '<option value="' . $n . '" ' . $selected . '>' . $n . '</option>';
+	}
+	return $weight_options;
+
+}

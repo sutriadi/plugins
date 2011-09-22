@@ -66,12 +66,10 @@ if ($_POST)
 			$script = "parent.$('#mainContent').simbioAJAX('". $dir . "/');";
 			if (isset($_GET['act']) AND $_GET['act'] == 'del')
 			{
-				$alert = __('Menu has been deleted!');
-				$sql = sprintf("DELETE FROM `plugins_menus` WHERE `menu` = '%s'", $post->menu);
 			}
 			else
 			{
-				$sql = sprintf("UPDATE `plugins_menus` SET `title` = '%s', `description` = '%s' WHERE `menu` = '%s'",
+				$sql = sprintf("UPDATE `plugins_menus` SET `title` = '%s', `desc` = '%s' WHERE `menu` = '%s'",
 					$post->title,
 					$post->desc,
 					$_GET['menu']
@@ -82,7 +80,7 @@ if ($_POST)
 		else
 		{
 			$script = "parent.$('#mainContent').simbioAJAX('". $dir . "/add_cat.php');";
-			$sql = sprintf("INSERT INTO `plugins_menus` (`menu`, `title`, `description`) VALUE ('%s', '%s', '%s')",
+			$sql = sprintf("INSERT INTO `plugins_menus` (`menu`, `title`, `desc`) VALUE ('%s', '%s', '%s')",
 				$post->menu,
 				$post->title,
 				$post->desc

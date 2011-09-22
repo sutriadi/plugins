@@ -42,7 +42,7 @@ if ( ! $can_read || ! $can_write)
 }
 
 require('../func.php'); // include plugin function
-require('./func.php'); // include dataTables function
+require('./func.php'); // include block function
 
 checksess();
 checkip();
