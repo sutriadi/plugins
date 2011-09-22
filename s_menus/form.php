@@ -35,9 +35,12 @@ if ( ! empty($menu))
 {
 	$params .= 'menu=' . $menu;
 	$mode = ( ! empty($menu) AND isset($get->type)) ? $get->type : 'menu';
-	list($item, $parent, $path, $label, $desc, $hidden, $external, $weight, $customized) = (isset($get->item) AND ( ! empty($get->item) || $get->item != 0)) ? menu_item_get($menu, $get->item) : array('',0,'','',$desc,'','',0,'');
+	$desc = $mode == 'menu' ? $desc : '';
+	$menus = set_parent_array();
+	list($item, $parent, $path, $label, $desc, $hidden, $external, $weight, $customized) = (isset($get->item) AND ( ! empty($get->item) || $get->item != 0)) ? menu_item_get($get->item, $menu) : array('',0,'','',$desc,'','',0,'');
 	if ( ! empty($item))
 	{
+		$mode = 'item';
 		$params .= '&item=' . $item;
 	}
 }
@@ -49,7 +52,7 @@ if ( ! empty($menu))
 
 <form name="mainForm" id="mainForm" method="POST" action="<?php echo $dir . "/setup.php?act=del&" . $params;?>" target="submitExec">
 <p>
-	<?php echo __('Are you sure to delete menu');?>: <strong><?php echo $label;?></strong>
+	<?php echo __('Are you sure to delete menu item');?>: <strong><?php echo $label;?></strong>?
 	<input type="hidden" name="item" value="<?php echo $item;?>" />
 	<input type="submit" value="<?php echo __('Delete');?>" />
 	<input type="button" onclick="parent.$('#mainContent').simbioAJAX('<?php echo $dir . '/';?>');" value="<?php echo __('Cancel');?>" />
@@ -60,7 +63,7 @@ if ( ! empty($menu))
 
 <form name="mainForm" id="mainForm" method="POST" action="<?php echo $dir . "/setup.php?act=del&" . $params;?>" target="submitExec">
 <p>
-	<?php echo __('Are you sure to delete menu item');?>: <strong><?php echo $title;?></strong>
+	<?php echo __('Are you sure to delete menu');?>: <strong><?php echo $title;?></strong>?
 	<input type="hidden" name="menu" value="<?php echo $menu;?>" />
 	<input type="submit" value="<?php echo __('Delete');?>" />
 	<input type="button" onclick="parent.$('#mainContent').simbioAJAX('<?php echo $dir . '/';?>');" value="<?php echo __('Cancel');?>" />
@@ -196,4 +199,3 @@ if ( ! empty($menu))
 <?php endif; ?>
 
 <iframe name="submitExec" class="noBlock" style="visibility: visible; width: 100%; height: 10;"></iframe>
-

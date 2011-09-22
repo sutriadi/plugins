@@ -53,26 +53,36 @@ $ips = implode(" ", json_decode(variable_get('allowed_ip', '["127.0.0.1", "::1"]
 
 if ($can_write)
 {
+	$item_tab = false;
 	if (isset($_GET['type']))
 	{
 		switch ($_GET['type'])
 		{
 			case "item":
-				$subtitle = ' - ' . __('Add Menu Item');
+				list($menu, $title, $desc) = (isset($_GET['menu']) AND ! empty($_GET['menu'])) ? menu_get($_GET['menu']) : array('','','');
+				$subtitle = sprintf(' - %s : <em>%s</em>', __('Add Menu Item'), $title);
+				$item_tab = true;
 				break;
 			case "menu":
 			default:
 				$subtitle = ' - ' . __('Add Menu');
 		}
 	}
-	else if (isset($_GET['menu']) AND isset($_GET['item']))
+	else if (isset($_GET['item']) AND ! isset($_GET['act']))
+	{
 		$subtitle = ' - ' . __('Edit Menu Item');
-	else if (isset($_GET['menu']) AND ! isset($_GET['item']))
+		$item_tab = true;
+	}
+	else if (isset($_GET['menu']) AND ! isset($_GET['item']) AND ! isset($_GET['act']))
 		$subtitle = ' - ' . __('Edit Menu');
 	else if (isset($_GET['act']) AND $_GET['act'] == 'del')
 	{
 		if (isset($_GET['menu']) AND isset($_GET['item']))
-			$subtitle = ' - ' . __('Delete Menu Item');
+		{
+			list($menu, $title, $desc) = (isset($_GET['menu']) AND ! empty($_GET['menu'])) ? menu_get($_GET['menu']) : array('','','');
+			$subtitle = sprintf(' - %s : <em>%s</em>', __('Delete Menu Item'), $title);
+			$item_tab = true;
+		}
 		else
 			$subtitle = ' - ' . __('Delete Menu');
 	}

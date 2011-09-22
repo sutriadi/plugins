@@ -53,8 +53,37 @@ if ($_POST)
 	$get = (object) $_GET;
 	$post = (object) $_POST;
 	
-	// memproses penghapusan menu/item
-	if (isset($get->act) AND $get->act == 'del')
+	
+	if (isset($get->hide) AND ! empty($get->hide))
+	{
+		
+	}
+	else if (isset($get->sort))
+	{
+		unset($_POST['saveData']);
+		foreach($_POST['sort'] as $item_id => $items)
+		{
+			if (is_array($items))
+			{
+				if ($item_id != $items['parent'])
+				{
+					$parent_id = ! is_numeric($items['parent']) ? 0 : $items['parent'];
+					$sql = sprintf("UPDATE `plugins_menus_items` "
+						. "SET `parent_id` = '%s', `weight` = '%s' "
+						. "WHERE `item_id` = '%s'",
+						$parent_id,
+						$items['weight'],
+						$item_id
+					);
+					$dbs->query($sql);
+					
+				}
+			}
+		}
+		$alert = __('Menu items has been saved!');
+		$script = "parent.$('#mainContent').simbioAJAX('". $dir . "/?menu=" . $get->menu . "');";
+	}
+	else if (isset($get->act) AND $get->act == 'del')
 	{
 		if (isset($post->item))
 		{

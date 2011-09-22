@@ -44,6 +44,11 @@ dari ./sutriadi-plugins-xxx menjadi ./plugins
 Tidak semua data di database dihapus ketika instalasi dihapus.
 Untuk menghapus secara permanen import data sql/remove.sql ke database
 
+SAY THANKS TO:
+- Drupal Core Development Team http://drupal.org
+- danielizer, author of
+  http://wizardinternetsolutions.com/web-database-design/single-query-dynamic-multi-level-menu/
+
 CHANGELOG
 16.09.2011 (alpha)
 - penambahan submodul block dan theme

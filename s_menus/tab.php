@@ -43,3 +43,20 @@ if (!defined('MODULES_WEB_ROOT_DIR')) {
 		</td>
 	</tr>
 </table>
+
+<?php if ($item_tab === true):?>
+
+<table style="width: 100%; background-color: rgb(220, 220, 220);" cellpadding="3" cellspacing="0">
+	<tbody>
+		<tr>
+			<td>
+				<input type="submit" value="<?php echo __('List Items');?>" class="button" onclick="$('#mainContent').simbioAJAX('<?php echo $dir . "/?menu=" . $menu ;?>');" />
+				<input type="submit" value="<?php echo __('Add Menu Item');?>" class="button" onclick="$('#mainContent').simbioAJAX('<?php echo $dir . "/add.php?type=item&menu=" . $menu ;?>');" />
+			</td>
+			<td align="right">
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+<?php endif;?>

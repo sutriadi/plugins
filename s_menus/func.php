@@ -49,6 +49,12 @@ function menu_get($menu, $mode = 'array')
 		return $num_rows;
 }
 
+/*
+ * 
+ * name: menu_item_get
+ * @param
+ * @return
+ */
 function menu_item_get($item_id, $menu = '')
 {
 	global $dbs;
@@ -79,11 +85,17 @@ function menu_item_get($item_id, $menu = '')
 	return $items;
 }
 
+/*
+ * 
+ * name: menu_items_get
+ * @param
+ * @return
+ */
 function menu_items_get($menu = '')
 {
 	global $dbs;
 	
-	$sql = "SELECT `item_id`, `path`, `label`, `desc`, `parent_id` "
+	$sql = "SELECT `item_id`, `path`, `label`, `desc`, `parent_id`, `weight`, `hidden`, `disabled` "
 		. "FROM `plugins_menus_items` ";
 	if ( ! empty($menu))
 		$sql .= sprintf("WHERE `menu` = '%s' ", $menu);
@@ -104,12 +116,61 @@ function menu_items_get($menu = '')
 	return $menus;
 }
 
-function menu_build_links($menus, $parent = 0)
+/*
+ * 
+ * name: menu_build_list
+ * @param
+ * @return
+ */
+function menu_build_list($menu_items, $bullet = '+', $parent = 0, $level = 0)
 {
+	global $dir, $menu, $menus;
 	
+	$list = '';
+	if (isset($menu_items['parents'][$parent]))
+	{
+		foreach ($menu_items['parents'][$parent] as $itemId)
+		{
+			$tolevel = $level;
+			$link = array();
+			$link[] = sprintf('<a href="%s">%s</a>', $dir . '/setup.php?item=' . $itemId, __('Hide'));
+			$link[] = sprintf('<a href="%s">%s</a>', $dir . '/add.php?type=item&menu=' . $menu . '&item=' . $itemId, __('Edit'));
+			$link[] = sprintf('<a href="%s">%s</a>', $dir . '/add.php?act=del&menu=' . $menu . '&item=' . $itemId, __('Delete'));
+			$list .= sprintf('<tr>'
+				. '<td>%s %s</td>'
+				. '<td>%s</td>'
+				. '<td>%s</td>'
+				. '<td>%s</td>'
+				. '</tr>',
+				str_repeat($bullet, $tolevel),
+				$menu_items['items'][$itemId]['label'],
+				sprintf('<select name="sort[%s][parent]">%s</select>',
+					$menu_items['items'][$itemId]['item_id'],
+					set_parent_options($menu_items['items'][$itemId]['parent_id'])
+				),
+				sprintf('<select name="sort[%s][weight]>%s</select>',
+					$menu_items['items'][$itemId]['item_id'],
+					set_weight_options($menu_items['items'][$itemId]['weight'])
+				),
+				implode(' | ', $link)
+			);
+			if (isset($menu_items['parents'][$itemId]))
+			{
+				$tolevel++;
+				$list .= menu_build_list($menu_items, $bullet, $itemId, $tolevel);
+			}
+		}
+	}
+	return $list;
 }
 
-function menu_build_list($menus, $parent = 0)
+/*
+ * 
+ * name: menu_build_links
+ * @param
+ * @return
+ */
+function menu_build_links($menus, $parent = 0)
 {
 	$list = '';
 	if (isset($menus['parents'][$parent]))
@@ -129,7 +190,7 @@ function menu_build_list($menus, $parent = 0)
 				$list .= sprintf('<li><a href="%s">%s</a>%s</li>',
 					$menus['items'][$itemId]['path'],
 					$menus['items'][$itemId]['label'],
-					menu_build_list($menus, $itemId)
+					menu_build_links($menus, $itemId)
 				);
 			}
 		}
@@ -138,112 +199,70 @@ function menu_build_list($menus, $parent = 0)
 	return $list;
 }
 
-function menu_build_opt($menus, $parent = 0)
+function menu_build_array($menus, $parent = 0, $level = 0)
 {
-	$opt = '';
+	$array = array();
 	if (isset($menus['parents'][$parent]))
 	{
 		foreach ($menus['parents'][$parent] as $itemId)
 		{
-			$opt .= sprintf('<option value="%s">%s</option>',
-				$itemId,
-				str_repeat('-', $parent+1) . $menus['items'][$itemId]['label']
+			$tolevel = $level;
+			$array[] = array('val' => $menus['items'][$itemId]['item_id'],
+				'label' => str_repeat('-', $tolevel+1) . $menus['items'][$itemId]['label']
 			);
 			if (isset($menus['parents'][$itemId]))
 			{
-				$opt .= menu_build_opt($menus, $itemId);
+				$tolevel++;
+				$array = array_merge($array, menu_build_array($menus, $itemId, $tolevel));
 			}
 		}
 	}
-	return $opt;
+	return $array;
 }
 
-function set_parent_options($parent_id)
+function set_parent_array($menu = '')
 {
 	global $dbs;
 	
 	$sql = "SELECT `menu`, `title` FROM `plugins_menus`";
+	if ( ! empty($menu))
+		$sql .= " WHERE `menu` = '$menu'";
 	$rows = $dbs->query($sql);
-	$options = '';
+	$array = array();
 	if ($rows->num_rows > 0)
 	{
 		while ($row = $rows->fetch_assoc())
 		{
-			$options .= sprintf('<option value="%s">%s</option>',
-				$row['menu'],
-				$row['title']
-			);
+			$array[] = array('val' => $row['menu'], 'label' => ! empty($menu) ? __('&lt;Root&gt;') : sprintf('&lt;%s&gt;', $row['title']));
 			$menus = menu_items_get($row['menu']);
-			$options .= menu_build_opt($menus);
+			$array = array_merge($array, menu_build_array($menus));
 		}
 	}
-	return $options;
-}
-
-function display_children($parent, $level)
-{
-    $sql = "SELECT `a`.`item_id`, `a`.`label`, `a`.`path`, Deriv1.Count "
-		. "FROM `plugins_menu_items` `a` "
-		. "LEFT OUTER JOIN (SELECT `parent_id`, COUNT(*) AS `cnt` FROM `plugins_menu_items` GROUP BY `parent_id`) `deriv` ON `a`.`item_id` = `defiv`.`parent_id` "
-		. "WHERE `a`.`parent_id` = " . $parent;
-/*
-    echo "<ul>";
-    while ($row = mysql_fetch_assoc($result)) {
-        if ($row['Count'] > 0) {
-            echo "<li><a href='" . $row['link'] . "'>" . $row['label'] . "</a>";
-			display_children($row['id'], $level + 1);
-			echo "</li>";
-        } elseif ($row['Count']==0) {
-            echo "<li><a href='" . $row['link'] . "'>" . $row['label'] . "</a></li>";
-        } else;
-    }
-    echo "</ul>";
-*/
+	return $array;
 }
 
 /*
-$result=mysql_query("SELECT item_id, label, link, parent FROM menu ORDER BY parent, sort, label");
-// Create a multidimensional array to conatin a list of items and parents
-$menu = array(
-    'items' => array(),
-    'parents' => array()
-);
-// Builds the array lists with data from the menu table
-while ($items = mysql_fetch_assoc($result))
+ * 
+ * name: set_parent_options
+ * @param
+ * @return
+ */
+function set_parent_options($parent_id)
 {
-    // Creates entry into items array with current menu item id ie. $menu['items'][1]
-    $menu['items'][$items['id']] = $items;
-    // Creates entry into parents array. Parents array contains a list of all items with children
-    $menu['parents'][$items['parent']][] = $items['id'];
+	global $menus, $menu;
+	
+	$opt = '';
+	if (count($menus) > 0)
+	{
+		foreach ($menus as $key => $index)
+		{
+			$selected = ($index['val'] == $parent_id) ? 'selected' : (($parent_id == 0 AND $index['val'] == $menu) ? 'selected' : '');
+			$opt .= sprintf('<option value="%s" %s>%s</option>',
+				$index['val'],
+				$selected,
+				$index['label']
+			);
+		}
+	}
+	return $opt;
 }
-*/
-
-// Menu builder function, parentId 0 is the root
-/*
-function buildMenu($parent, $menu)
-{
-   $html = "";
-   if (isset($menu['parents'][$parent]))
-   {
-      $html .= "
-      <ul>\n";
-       foreach ($menu['parents'][$parent] as $itemId)
-       {
-          if(!isset($menu['parents'][$itemId]))
-          {
-             $html .= "<li>\n  <a href='".$menu['items'][$itemId]['link']."'>".$menu['items'][$itemId]['label']."</a>\n</li> \n";
-          }
-          if(isset($menu['parents'][$itemId]))
-          {
-             $html .= "
-             <li>\n  <a href='".$menu['items'][$itemId]['link']."'>".$menu['items'][$itemId]['label']."</a> \n";
-             $html .= buildMenu($itemId, $menu);
-             $html .= "</li> \n";
-          }
-       }
-       $html .= "</ul> \n";
-   }
-   return $html;
-}
-echo buildMenu(0, $menu);
-*/

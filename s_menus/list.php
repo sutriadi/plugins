@@ -24,14 +24,16 @@ if (!defined('MODULES_WEB_ROOT_DIR')) {
 	exit();
 }
 
-$get = (object) $_GET;
-
 $mode = 'menu';
-list($menu, $title, $desc) = (isset($get->menu) AND ! empty($get->menu)) ? menu_get($get->menu) : array('', '', '');
 if ( ! empty($menu))
 {
 	$mode = 'item';
-	list($item, $parent, $path, $label, $hidden, $external, $weight, $customized) = (isset($get->item) AND ( ! empty($get->item) || $get->item != 0)) ? menu_item_get($menu, $get->item) : array('','','','','','','','');
+	$menu_items = menu_items_get($menu);
+	$menus = set_parent_array($menu);
+	$items = menu_build_list($menu_items);
+	$list_item = sprintf('<tbody>%s</tbody>',
+		( ! empty($items)) ? $items : sprintf('<tr><td colspan="2" align="center">%s</td></tr>', __('There are no menu items listed!'))
+	);
 }
 
 if ($mode == 'menu'):
@@ -39,7 +41,7 @@ if ($mode == 'menu'):
 	$menus = $dbs->query($sql);
 	$list_cat = '<tbody>';
 	$list_item_label = __('List Items');
-	$add_item_label = __('Add Item');
+	$add_item_label = __('Add Menu Item');
 	$edit_menu_label = __('Edit');
 	$del_menu_label = __('Delete');
 	if ($menus AND $menus->num_rows > 0)
@@ -86,9 +88,44 @@ if ($mode == 'menu'):
 	</table>
 
 <?php
-	else:
+
+else:
+	
 ?>
 
+<form name="mainForm" id="mainForm" method="POST" action="<?php echo $dir . "/setup.php?sort&menu=" . $menu;?>" target="submitExec">
+	<table cellspacing="0" cellpadding="3" style="width: 100%; background-color: #dcdcdc;">
+		<tr>
+			<td>
+				<input type="submit" name="saveData" value="<?php echo __('Save');?>" class="button" />
+			</td>
+			<td align="right">
+			</td>
+		</tr>
+	</table>
+	<table width="100%" cellspacing="0" cellpadding="5" style="text-align: left;">
+		<tr style="background: gray; color: white;">
+			<th><?php echo __('Item');?></th>
+			<th><?php echo __('Parent');?></th>
+			<th><?php echo __('Weight');?></th>
+			<th><?php echo __('Action');?></th>
+		</tr>
+		<?php echo $list_item;?>
+	</table>
+	<table cellspacing="0" cellpadding="3" style="width: 100%; background-color: #dcdcdc;">
+		<tr>
+			<td>
+				<input type="submit" name="saveData" value="<?php echo __('Save');?>" class="button" />
+			</td>
+			<td align="right">
+			</td>
+		</tr>
+	</table>
+</form>
+<iframe name="submitExec" class="noBlock" style="visibility: visible; width: 100%; height: 10;"></iframe>
+
 <?php
-	endif;
+
+endif;
+
 ?>

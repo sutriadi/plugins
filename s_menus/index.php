@@ -53,6 +53,14 @@ checkref();
 list($host, $dir, $file) = scinfo();
 $ips = implode(" ", json_decode(variable_get('allowed_ip', '["127.0.0.1", "::1"]'), true));
 
+$item_tab = false;
+if (isset($_GET['menu']))
+{
+	list($menu, $title, $desc) = (isset($_GET['menu']) AND ! empty($_GET['menu'])) ? menu_get($_GET['menu']) : array('','','');
+	$subtitle = sprintf(' - %s : <em>%s</em>', __('Items'), $title);
+	$item_tab = true;
+}
+
 if ($can_write) include('./tab.php');
 if ($can_write) include('./list.php');
 

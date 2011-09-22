@@ -22,3 +22,32 @@ CREATE TABLE IF NOT EXISTS `plugins_blocks_custom` (
   PRIMARY KEY (`block`),
   KEY `desc` (`desc`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE IF NOT EXISTS `plugins_menus` (
+  `menu` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `title` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `desc` text COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`menu`),
+  KEY `menu` (`menu`,`title`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+INSERT INTO `plugins_menus` (`menu`, `title`, `desc`) VALUES
+('primary-links', 'Primary Links', 'Primary links'),
+('secondary-links', 'Secondary Links', 'Secondary links');
+
+CREATE TABLE `plugins_menus_items` (
+  `menu` varchar(32) NOT NULL DEFAULT '',
+  `item_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `parent_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `path` varchar(255) NOT NULL DEFAULT '',
+  `label` varchar(255) NOT NULL DEFAULT '',
+  `desc` varchar(255) NOT NULL,
+  `disabled` tinyint(1) NOT NULL,
+  `hidden` tinyint(1) NOT NULL DEFAULT '0',
+  `external` tinyint(1) NOT NULL DEFAULT '0',
+  `weight` int(11) NOT NULL DEFAULT '0',
+  `customized` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`item_id`),
+  KEY `path_menu` (`path`(128),`menu`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8
