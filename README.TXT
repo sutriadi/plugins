@@ -11,7 +11,7 @@ Daily Development: https://github.com/sutriadi/plugins
 - SLiMS 3 Stable 15 "Matoa" (download di http://slims.web.id/)
 
 # Instalasi
-- ekstrak paket plugins-15.x.x.tar.gz
+- ekstrak paket plugins-3.15-x.x.tar.gz
   sehingga akan menghasilkan direktori ./plugins
 - salin direktori plugins hasil ekstraksi ke ./admin/modules/
   sehingga hasil akhirnya adalah direktori ./admin/modules/plugins/
@@ -21,7 +21,7 @@ mohon untuk mengubah nama direktori hasil penguraian
 dari ./sutriadi-plugins-xxx menjadi ./plugins
 
 # Naikkan Instalasi
-- uraikan paket plugins-15.x.x
+- uraikan paket plugins-3.15-x.x
   sehingga akan menghasilkan direktori ./plugins
 - salin seluruh direktori plugin yang terpasang dari direktori
   ./admin/modules/plugins/ ke direktori include hasil ekstraksi
@@ -29,9 +29,9 @@ dari ./sutriadi-plugins-xxx menjadi ./plugins
 - hapus direktori ./admin/modules/plugins
 - salin direktori plugins hasil ekstraksi ke ./admin/modules/
   sehingga hasil akhirnya adalah direktori ./admin/modules/plugins/
-- import data sql/upgrade-to-15.1.2.sql (bila dari versi 0.3),
-  dan bila melakukan upgrade dari versi di bawah 0.3, supaya
-  melakukan import data sql/upgrade-to-0.3.sql terlebih dahulu
+- import data sql/upgrade-to-3.15-2.1.sql (bila dari versi 15.1.2),
+  dan bila melakukan upgrade dari versi di bawah 15.1.2, supaya
+  melakukan import data upgrade secara berurutan
 catatan: bila melakukan upgrade dari paket yang diambil dari github,
 mohon untuk mengubah nama direktori hasil penguraian
 dari ./sutriadi-plugins-xxx menjadi ./plugins
@@ -50,7 +50,7 @@ SAY THANKS TO:
   http://wizardinternetsolutions.com/web-database-design/single-query-dynamic-multi-level-menu/
 
 CHANGELOG
-22.09.2011 (beta)
+24.09.2011 (beta)
 - penambahan submodul block, theme dan menu
 - penambahan metode serial untuk penyimpanan variable
 - penambahan file SQL remove data moduk Plugins
