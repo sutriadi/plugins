@@ -823,6 +823,21 @@ function list_avtheme()
 
 /*
  * 
+ * name: defconf_theme
+ * @param none
+ * @return array
+ */
+function defconf_theme()
+{
+	$defconf = array(
+		'search' => false,
+		'primary_links' => false,
+	);
+	return $defconf;
+}
+
+/*
+ * 
  * name: set_weight_options
  * @param $default number
  * @return string html

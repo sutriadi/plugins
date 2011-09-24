@@ -25,11 +25,7 @@ if (!defined('MODULES_WEB_ROOT_DIR')) {
 }
 
 $params = '?theme=' . $theme;
-$defconf = array(
-	'search' => false,
-	'primary_links' => false,
-);
-
+$defconf = defconf_theme();
 $theme_conf = variable_get('theme_' . $theme . '_settings', $defconf, 'serial');
 $theme_info = drupal_parse_info_file($theme_dir . '/tpl.info');
 $theme_info = isset($theme_info['features']) ? $theme_info['features'] : array_keys($defconf);
