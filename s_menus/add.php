@@ -23,9 +23,7 @@
 define('INDEX_AUTH', '1');
 
 if (!defined('SENAYAN_BASE_DIR')) {
-    // main system configuration
     require '../../../../sysconfig.inc.php';
-    // start the session
     require SENAYAN_BASE_DIR.'admin/default/session.inc.php';
 }
 

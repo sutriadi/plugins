@@ -26,7 +26,6 @@ if (!defined('MODULES_WEB_ROOT_DIR')) {
 
 ?>
 
-<!-- formulir mulai -->
 <?php
 	$subtitle = isset($subtitle) ? ' ' . $subtitle : '';
 	$title = sprintf('%s - %s', __('Plugins'), __('Blocks')) . $subtitle;
@@ -38,9 +37,6 @@ if (!defined('MODULES_WEB_ROOT_DIR')) {
 		<td>
 			<input type="button" name="listBlocks" value="<?php echo __('List');?>" class="button" onclick="$('#mainContent').simbioAJAX('<?php echo $dir . "/?theme=" . $theme ;?>');" />
 			<input type="button" name="addBlock" value="<?php echo __('Add Block');?>" class="button" onclick="$('#mainContent').simbioAJAX('<?php echo $dir . "/add.php" ;?>');" />
-			<!--
-			<input type="button" name="confTables" value="<?php echo __('Settings');?>" class="button" onclick="$('#mainContent').simbioAJAX('<?php echo $dir . "/settings.php" ;?>');" />
-			-->
 		</td>
 		<td align="right">
 		</td>

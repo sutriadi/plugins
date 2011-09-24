@@ -1,6 +1,6 @@
 <?php
 /*
- *      tab.php
+ *      blocks.php
  *      
  *      Copyright 2011 Indra Sutriadi Pipii <indra@sutriadi.web.id>
  *      
@@ -24,21 +24,46 @@ if (!defined('MODULES_WEB_ROOT_DIR')) {
 	exit();
 }
 
-?>
+function block_menu_list()
+{
+	global $dbs;
+	
+	$sql = "SELECT * FROM `plugins_menus`";
+	$rows = $dbs->query($sql);
+	$blocks = array();
+	if ($rows->num_rows > 0)
+	{
+		while ($row = $rows->fetch_assoc())
+		{
+			$blocks[$row['menu']] = array('desc' => __($row['title']));
+		}
+	}
+	return $blocks;
+}
 
-<?php
-	$subtitle = isset($subtitle) ? ' ' . $subtitle : '';
-	$title = sprintf('%s - %s', __('Plugins'), __('Themes')) . $subtitle;
-	echo fs_render($title);
-?>
+function block_menu($op = 'list', $delta = 0)
+{
+	switch ($op)
+	{
+		case "list":
+			$blocks = block_menu_list();
+	}
+	return $blocks;
+}
 
-<table cellspacing="0" cellpadding="3" style="width: 100%; background-color: #dcdcdc;">
-	<tr>
-		<td>
-			<input type="button" name="listThemes" value="<?php echo __('List');?>" class="button" onclick="$('#mainContent').simbioAJAX('<?php echo $dir . "/" ;?>');" />
-			<input type="button" name="reindexThemes" value="<?php echo __('Reindex Themes');?>" class="button" onclick="$('#mainContent').simbioAJAX('<?php echo $dir . "/?act=reindex" ;?>');" />
-		</td>
-		<td align="right">
-		</td>
-	</tr>
-</table>
+function block_core($op = 'list', $delta = 0)
+{
+	switch ($op)
+	{
+		case "list":
+			$blocks = array();
+			$blocks['advanced_search'] = array('desc' => __('Advanced Search'));
+			$blocks['award'] = array('desc' => __('Award'));
+			$blocks['search'] = array('desc' => __('Search'));
+			$blocks['language'] = array('desc' => __('Language'));
+			$blocks['license'] = array('desc' => __('License'));
+			$blocks['welcome'] = array('desc' => __('Welcome'));
+			break;
+	}
+	return $blocks;
+}

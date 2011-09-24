@@ -56,6 +56,13 @@ function block_custom_get($block, $mode = 'array')
 		return $num_rows;
 }
 
+/*
+ * 
+ * name: block_settings_get
+ * @param $block
+ * @param $delta
+ * @return
+ */
 function block_settings_get($block, $delta)
 {
 	global $dbs, $theme;
@@ -86,6 +93,7 @@ function block_settings_get($block, $delta)
 	}
 	return array($plugin, $delta, $region, $weight, $title, $classes);
 }
+
 /*
  * 
  * name: block_default_regions
@@ -156,6 +164,10 @@ function block_all_list($return = false)
 			);
 		}
 	}
+	
+	require('./blocks.php');
+	$preblocks['core'] = block_core();
+	$preblocks['menu'] = block_menu();
 
 	$info = drupal_parse_info_file($theme_dir . '/tpl.info');
 
@@ -210,24 +222,6 @@ function block_all_list($return = false)
 
 /*
  * 
- * name: regions_get
- * @param
- * @return
- */
-function regions_get($block)
-{
-	global $dbs;
-	$sql = sprintf("SELECT `regions` FROM `plugins_blocks` WHERE `block` = '%s'", $block);
-	$regions = array();
-	$rows = $dbs->query($sql);
-	$num_rows = $rows->num_rows;
-	if ($num_rows > 0)
-	{
-	}
-}
-
-/*
- * 
  * name: set_region_options
  * @param $default string
  * @return string html
@@ -236,6 +230,8 @@ function set_region_options($default = 'none')
 {
 	global $default_regions;
 	$block_region_options = '';
+	if (empty($default))
+		$default = 'none';
 	foreach ($default_regions as $region => $region_name)
 	{
 		$selected = ($default === $region) ? "selected" : "";
@@ -270,4 +266,36 @@ function set_action_links($block)
 		);
 	}
 	return $links;
+}
+
+function setup_block($plugin = 'block', $delta, $title)
+{
+	global $dbs;
+	
+	$sqlth = "INSERT INTO `plugins_blocks` (`plugin`, `delta`, `theme`, `title`) VALUES ";
+	$tplval = sprintf("('%s', '%s', '%s', '%s')",
+		$plugin,
+		$delta,
+		'%s',
+		$title
+	);
+	$valth = array();
+	$sql = sprintf("SELECT `theme` FROM `plugins_blocks` GROUP BY `theme`");
+	$themes = $dbs->query($sql);
+	if ($themes->num_rows > 0)
+	{
+		while ($theme = $themes->fetch_assoc())
+		{
+			$valth[] = sprintf($tplval, $theme['theme']);
+		}
+	}
+	else
+	{
+		$valth[] = sprintf($tplval, 'base');
+	}
+	$valsth = implode(", ", $valth);
+	$sqlth .= $valsth;
+	$dbs->query($sqlth);
+	unset($valth);
+	unset($valsth);
 }

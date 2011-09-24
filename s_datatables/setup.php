@@ -23,15 +23,12 @@
 define('INDEX_AUTH', '1');
 
 if (!defined('SENAYAN_BASE_DIR')) {
-    // main system configuration
     require '../../../../sysconfig.inc.php';
-    // start the session
     require SENAYAN_BASE_DIR.'admin/default/session.inc.php';
 }
 
 require SENAYAN_BASE_DIR.'admin/default/session_check.inc.php';
 
-// privileges checking
 $can_read = utility::havePrivilege('plugins', 'r');
 $can_write = utility::havePrivilege('plugins', 'w');
 

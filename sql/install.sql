@@ -10,7 +10,10 @@ CREATE TABLE IF NOT EXISTS `plugins` (
   `plugin_build` VARCHAR( 50 ) DEFAULT 0,
   `plugin_description` text NOT NULL,
   `plugin_type` int(1) NOT NULL,
-  `plugin_install` varchar(150) NOT NULL,
+  `plugin_page` text NOT NULL,
+  `plugin_menu` text NOT NULL,
+  `plugin_block` text NOT NULL,
+  `plugin_install` text NOT NULL,
   `plugin_remove` text NOT NULL,
   `plugin_deps` text NOT NULL,
   PRIMARY KEY  (`plugin_id`)
@@ -22,7 +25,9 @@ CREATE TABLE IF NOT EXISTS `plugins_vars` (
   PRIMARY KEY (`name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-INSERT INTO `plugins_vars` (`name`, `value`) VALUE ('allowed_ip', '["127.0.0.1","::1","192.168.56.101"]');
+INSERT INTO `plugins_vars` (`name`, `value`) VALUES
+('allowed_ip', '["127.0.0.1","::1","192.168.56.101"]'),
+('allowed_tags', '<a> <em> <strong> <cite> <code> <ul> <ol> <li> <dl> <dt> <dd>');
 
 CREATE TABLE IF NOT EXISTS `plugins_dtables` (
   `table` varchar(32) NOT NULL DEFAULT '' COMMENT 'Primary Key: Unique key for table.',
@@ -73,6 +78,18 @@ CREATE TABLE IF NOT EXISTS `plugins_menus` (
 INSERT INTO `plugins_menus` (`menu`, `title`, `desc`) VALUES
 ('primary-links', 'Primary Links', 'Primary links'),
 ('secondary-links', 'Secondary Links', 'Secondary links');
+
+INSERT INTO `plugins_blocks` (`plugin`, `delta`, `theme`, `title`) VALUES
+('menu', 'primary-links', 'base', 'Primary Links'),
+('menu', 'secondary-links', 'base', 'Secondary Links');
+
+INSERT INTO `plugins_blocks` (`plugin`, `delta`, `theme`, `title`) VALUES
+('core', 'search', 'base', 'Search'),
+('core', 'advanced_search', 'base', 'Advanced Search'),
+('core', 'language', 'base', 'Language'),
+('core', 'license', 'base', 'License'),
+('core', 'welcome', 'base', 'Welcome'),
+('core', 'award', 'base', 'Award');
 
 CREATE TABLE `plugins_menus_items` (
   `menu` varchar(32) NOT NULL DEFAULT '',

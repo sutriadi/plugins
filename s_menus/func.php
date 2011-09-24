@@ -133,7 +133,10 @@ function menu_build_list($menu_items, $bullet = '+', $parent = 0, $level = 0)
 		{
 			$tolevel = $level;
 			$link = array();
-			$link[] = sprintf('<a href="%s">%s</a>', $dir . '/setup.php?item=' . $itemId, __('Hide'));
+			if ($menu_items['items'][$itemId]['hidden'] != true)
+				$link[] = sprintf('<a href="%s">%s</a>', $dir . '/setup.php?menu=' . $menu . '&hide=' . $itemId, __('Hide'));
+			else
+				$link[] = sprintf('<a href="%s">%s</a>', $dir . '/setup.php?menu=' . $menu . '&unhide=' . $itemId, __('Unhide'));
 			$link[] = sprintf('<a href="%s">%s</a>', $dir . '/add.php?type=item&menu=' . $menu . '&item=' . $itemId, __('Edit'));
 			$link[] = sprintf('<a href="%s">%s</a>', $dir . '/add.php?act=del&menu=' . $menu . '&item=' . $itemId, __('Delete'));
 			$list .= sprintf('<tr>'
@@ -256,7 +259,11 @@ function set_parent_options($parent_id)
 	{
 		foreach ($menus as $key => $index)
 		{
-			$selected = ($index['val'] == $parent_id) ? 'selected' : (($parent_id == 0 AND $index['val'] == $menu) ? 'selected' : '');
+			$selected = '';
+			if ($parent_id == 0 AND $index['val'] == $menu)
+				$selected = 'selected';
+			else if ($index['val'] == $parent_id AND $index['val'] != 0)
+				$selected = 'selected';
 			$opt .= sprintf('<option value="%s" %s>%s</option>',
 				$index['val'],
 				$selected,

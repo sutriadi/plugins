@@ -25,10 +25,12 @@ if (!defined('MODULES_WEB_ROOT_DIR')) {
 }
 
 list($host, $dir, $file) = scinfo();
-$ips = implode(" ", json_decode(variable_get('allowed_ip', '["127.0.0.1", "::1"]'), true));
+$allowed_ip = implode(" ", json_decode(variable_get('allowed_ip', '["127.0.0.1", "::1"]'), true));
 $opac_theme = variable_get('opac_theme', 'base');
+$opac_frontpage = variable_get('opac_frontpage', '');
 $ui_theme = variable_get('ui_theme', 'base');
 $ui_css_version = variable_get('ui_css_version', '');
+$allowed_tags = variable_get('allowed_tags', '<a> <em> <strong> <cite> <code> <ul> <ol> <li> <dl> <dt> <dd>');
 $nodir = array('.', '..');
 
 require(SENAYAN_BASE_DIR . 'template/fatin/php/function.php');
@@ -63,7 +65,6 @@ foreach ($dirs_ui_theme as $file_ui_theme)
 
 ?>
 
-<!-- formulir mulai -->
 <?php
 	$title = sprintf('%s - %s', __('Plugins'), __('Configure'));
 	echo fs_render($title, array('ip_detail' => false));
@@ -81,10 +82,10 @@ foreach ($dirs_ui_theme as $file_ui_theme)
 	</table>
 	<table width="100%" cellpadding="5" cellspacing="0" style="border-collapsed: collapsed;" id="dataList">
 		<tr valign="top">
-			<td class="alterCell" style="font-weight: bold;"><label for="ips" style="cursor: pointer;"><?php echo __('Allowed IPs');?></label></td>
+			<td class="alterCell" style="font-weight: bold;"><label for="allowed_ip" style="cursor: pointer;"><?php echo __('Allowed IPs');?></label></td>
 			<td class="alterCell" style="font-weight: bold; width: 1%;">:</td>
 			<td class="alterCell2">
-				<input id="ips" name="ips" type="text" size="50" value="<?php echo $ips;?>" />
+				<input id="allowed_ip" name="allowed_ip" type="text" size="50" value="<?php echo $allowed_ip;?>" />
 				<br />
 				<span><?php echo __('Separate IP addresses with space');?></span>
 			</td>
@@ -129,6 +130,18 @@ foreach ($dirs_ui_theme as $file_ui_theme)
 				<input type="text" id="ui_css_version" name="ui_css_version" value="<?php echo $ui_css_version;?>" />
 				<br />
 				<span><?php echo __('Entry jQuery-UI CSS version. Leave blank or enter 0 for use css file without version.');?></span>
+			</td>
+		</tr>
+		<tr valign=top>
+			<th colspan="4"><?php echo __('Input Formats');?></th>
+		</tr>
+		<tr valign="top">
+			<td class="alterCell" style="font-weight: bold;"><label for="allowed_tags" style="cursor: pointer;"><?php echo __('Allowed HTML Tags');?></label></td>
+			<td class="alterCell" style="font-weight: bold; width: 1%;">:</td>
+			<td class="alterCell2">
+				<input type="text" id="allowed_tags" style="width:100%;" name="allowed_tags" value="<?php echo $allowed_tags;?>" />
+				<br />
+				<span><?php echo __('Specify tags which should not be stripped.');?></span>
 			</td>
 		</tr>
 	</table>

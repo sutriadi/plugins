@@ -30,7 +30,7 @@ $defconf = array(
 	'primary_links' => false,
 );
 
-$theme_conf = unserialize(variable_get('theme_' . $theme . '_settings', serialize($defconf)));
+$theme_conf = variable_get('theme_' . $theme . '_settings', $defconf, 'serial');
 $theme_info = drupal_parse_info_file($theme_dir . '/tpl.info');
 $theme_info = isset($theme_info['features']) ? $theme_info['features'] : array_keys($defconf);
 $perm_search = (in_array('search', $theme_info)) ? '' : 'disabled';
@@ -38,8 +38,8 @@ $perm_primary_links = (in_array('primary_links', $theme_info)) ? '' : 'disabled'
 
 $value = array();
 $perm = array();
-$search = ($perm_search != 'disabled' AND isset($theme_conf['search']) AND $theme_conf['search'] === true) ? 'checked' : '';
-$primary_links = ($perm_primary_links != 'disabled' AND isset($theme_conf['primary_links']) AND $theme_conf['primary_links'] === true) ? 'checked' : '';
+$search = ($perm_search != 'disabled' AND isset($theme_conf['search']) AND $theme_conf['search'] == 'on') ? 'checked' : '';
+$primary_links = ($perm_primary_links != 'disabled' AND isset($theme_conf['primary_links']) AND $theme_conf['primary_links'] == 'on') ? 'checked' : '';
 
 ?>
 
@@ -94,4 +94,4 @@ $primary_links = ($perm_primary_links != 'disabled' AND isset($theme_conf['prima
 		</tr>
 	</table>
 </form>
-<iframe name="submitExec" class="noBlock" style="visibility: hidden; width: 100%; height: 0;"></iframe>
+<iframe name="submitExec" class="noBlock" style="visibility: visible; width: 100%; height: 10;"></iframe>

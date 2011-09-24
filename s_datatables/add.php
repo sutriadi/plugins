@@ -23,9 +23,7 @@
 define('INDEX_AUTH', '1');
 
 if (!defined('SENAYAN_BASE_DIR')) {
-    // main system configuration
     require '../../../../sysconfig.inc.php';
-    // start the session
     require SENAYAN_BASE_DIR.'admin/default/session.inc.php';
 }
 
@@ -67,6 +65,11 @@ if ($can_write)
 	}
 	else if (isset($_GET['action']) AND $_GET['action'] == 'del')
 		$subtitle = ' - ' . __('Delete');
+	else if (isset($_GET['table']))
+		$subtitle = ' - ' . __('Edit');
+	else
+		$subtitle = ' - ' . __('Add');
+	
 	include('./tab.php');
 	include('./form.php');
 }

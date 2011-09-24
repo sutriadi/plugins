@@ -50,7 +50,7 @@ require('./func.php');
 require('./variable.php');
 
 checksess();
-
+checkref();
 checkip();
 
 require('./session.php');

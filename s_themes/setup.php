@@ -23,15 +23,12 @@
 define('INDEX_AUTH', '1');
 
 if (!defined('SENAYAN_BASE_DIR')) {
-    // main system configuration
     require '../../../../sysconfig.inc.php';
-    // start the session
     require SENAYAN_BASE_DIR.'admin/default/session.inc.php';
 }
 
 require SENAYAN_BASE_DIR.'admin/default/session_check.inc.php';
 
-// privileges checking
 $can_read = utility::havePrivilege('plugins', 'r');
 $can_write = utility::havePrivilege('plugins', 'w');
 
@@ -57,15 +54,9 @@ if ($_POST)
 	$alert = __('Theme configuration has been saved!');
 	$script = "parent.$('#mainContent').simbioAJAX('". $dir . "/?act=configure&theme=" . $theme . "');";
 	
-	$key = 'theme_' . $theme . '_settings';
-	$value = array();
+	unset($_POST['saveData']);
 	unset($_POST['theme']);
-	foreach ($_POST as $post => $value)
-	{
-		$value[$post] = $value;
-	}
-	$value = serialize($value);
-	variable_set($key, $value);
+	variable_set('theme_' . $theme . '_settings', $_POST, 'serial');
 
 	echo "<html><head><script type=\"text/javascript\">alert('$alert');$script</script></head><body></body></html>";
 }

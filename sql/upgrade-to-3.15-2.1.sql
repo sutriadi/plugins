@@ -1,5 +1,11 @@
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
+ALTER TABLE `plugins` ADD COLUMN `plugin_block` TEXT NOT NULL AFTER `plugin_type`;
+ALTER TABLE `plugins` ADD COLUMN `plugin_menu` TEXT NOT NULL AFTER `plugin_type`;
+ALTER TABLE `plugins` ADD COLUMN `plugin_page` TEXT NOT NULL AFTER `plugin_type`;
+
+INSERT INTO `plugins_vars` (`name`, `value`) VALUES ('allowed_tags', '<a> <em> <strong> <cite> <code> <ul> <ol> <li> <dl> <dt> <dd>');
+
 CREATE TABLE IF NOT EXISTS `plugins_blocks` (
   `idblock` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `plugin` varchar(100) NOT NULL,
@@ -23,7 +29,6 @@ CREATE TABLE IF NOT EXISTS `plugins_blocks_custom` (
   KEY `desc` (`desc`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-
 CREATE TABLE IF NOT EXISTS `plugins_menus` (
   `menu` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
   `title` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -35,6 +40,18 @@ CREATE TABLE IF NOT EXISTS `plugins_menus` (
 INSERT INTO `plugins_menus` (`menu`, `title`, `desc`) VALUES
 ('primary-links', 'Primary Links', 'Primary links'),
 ('secondary-links', 'Secondary Links', 'Secondary links');
+
+INSERT INTO `plugins_blocks` (`plugin`, `delta`, `theme`, `title`) VALUES
+('menu', 'primary-links', 'base', 'Primary Links'),
+('menu', 'secondary-links', 'base', 'Secondary Links');
+
+INSERT INTO `plugins_blocks` (`plugin`, `delta`, `theme`, `title`) VALUES
+('core', 'search', 'base', 'Search'),
+('core', 'advanced_search', 'base', 'Advanced Search'),
+('core', 'language', 'base', 'Language'),
+('core', 'license', 'base', 'License'),
+('core', 'welcome', 'base', 'Welcome'),
+('core', 'award', 'base', 'Award');
 
 CREATE TABLE `plugins_menus_items` (
   `menu` varchar(32) NOT NULL DEFAULT '',

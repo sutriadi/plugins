@@ -24,15 +24,12 @@
 define('INDEX_AUTH', '1');
 
 if (!defined('SENAYAN_BASE_DIR')) {
-    // main system configuration
     require '../../../../sysconfig.inc.php';
-    // start the session
     require SENAYAN_BASE_DIR.'admin/default/session.inc.php';
 }
 
 require SENAYAN_BASE_DIR.'admin/default/session_check.inc.php';
 
-// privileges checking
 $can_read = utility::havePrivilege('plugins', 'r');
 $can_write = utility::havePrivilege('plugins', 'w');
 
@@ -49,8 +46,10 @@ if ($_POST)
 	$post = (object) $_POST;
 	if (isset($post->ips)) variable_set('allowed_ip', explode(" ", $post->ips), "json");
 	if (isset($post->opac_theme)) variable_set('opac_theme', $post->opac_theme);
+	if (isset($post->opac_frontpage)) variable_set('opac_fronpage', $post->opac_frontpage);
 	if (isset($post->ui_theme)) variable_set('ui_theme', $post->ui_theme);
 	if (isset($post->ui_css_version)) variable_set('ui_css_version', $post->ui_css_version);
+	if (isset($post->ui_css_version)) variable_set('allowed_tags', $post->allowed_tags);
 	
 	echo "<html><head><script type=\"text/javascript\">alert('" . __('Configuration has been saved!') . "');parent.$('#mainContent').simbioAJAX('". $dir . "/');</script></head><body></body></html>";
 	exit();

@@ -62,7 +62,7 @@ foreach ($filters as $f => $val)
 
 <form name="mainForm" id="mainForm" method="POST" action="<?php echo $dir . "/setup.php?act=del&delta=" . $delta;?>" target="submitExec">
 <p>
-	<?php echo __('Are you sure to delete block');?>: <strong><?php echo $desc;?></strong>
+	<?php echo __('Are you sure to delete block');?>: <strong><?php echo $desc;?></strong>?
 	<input type="hidden" name="table" value="<?php echo $block;?>" />
 	<input type="submit" value="<?php echo __('Delete');?>" />
 	<input type="button" onclick="parent.$('#mainContent').simbioAJAX('<?php echo $dir . '/';?>');" value="<?php echo __('Cancel');?>" />

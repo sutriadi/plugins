@@ -32,7 +32,7 @@ foreach ($enplugins as $plugin => $info)
 {
 	$trbg = $bgtr[$row % 2];
 	$trfg = $fgtr[$row % 2];
-	if (array_key_exists($plugin, $avplugins))
+	if (array_key_exists($plugin, $avplugins) AND ! in_array($plugin, array('menu', 'block', 'core')))
 	{
 		$disabled = '';
 		switch ($info['plugin_type'])

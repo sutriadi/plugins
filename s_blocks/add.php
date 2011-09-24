@@ -53,10 +53,12 @@ $ips = implode(" ", json_decode(variable_get('allowed_ip', '["127.0.0.1", "::1"]
 
 if ($can_write)
 {
-	if ($_GET AND isset($_GET['block']) AND isset($_GET['delta']))
-		$subtitle = ' - ' . __('Configure');
-	else if (isset($_GET['act']) AND $_GET['act'] == 'del')
+	if (isset($_GET['act']) AND $_GET['act'] == 'del')
 		$subtitle = ' - ' . __('Delete');
+	else if (isset($_GET['block']) AND isset($_GET['delta']))
+		$subtitle = ' - ' . __('Configure');
+	else
+		$subtitle = ' - ' . __('Add Block');
 	
 	$theme = isset($_GET['theme']) ? $_GET['theme'] : variable_get('opac_theme');
 	

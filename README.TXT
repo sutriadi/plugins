@@ -1,5 +1,5 @@
 Plugins Module for SLiMS
-Version 3.15-2.1 build 14083116092011
+Version 3.15-2.1 build 10120224092011
 
 Copyright (c) 1431 H / 2010 M
 Indra Sutriadi Pipii (indra@sutriadi.web.id)
@@ -50,8 +50,11 @@ SAY THANKS TO:
   http://wizardinternetsolutions.com/web-database-design/single-query-dynamic-multi-level-menu/
 
 CHANGELOG
-16.09.2011 (alpha)
-- penambahan submodul block dan theme
+22.09.2011 (beta)
+- penambahan submodul block, theme dan menu
+- penambahan metode serial untuk penyimpanan variable
+- penambahan file SQL remove data moduk Plugins
+- (uji coba) penambahan kompatibilitas menu, block dan plugin
 
 03.09.2011
 - restrukturisasi direktori

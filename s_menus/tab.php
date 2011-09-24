@@ -26,7 +26,6 @@ if (!defined('MODULES_WEB_ROOT_DIR')) {
 
 ?>
 
-<!-- formulir mulai -->
 <?php
 	$subtitle = isset($subtitle) ? ' ' . $subtitle : '';
 	$title = sprintf('%s - %s', __('Plugins'), __('Menus')) . $subtitle;

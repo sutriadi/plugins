@@ -23,15 +23,12 @@
 define('INDEX_AUTH', '1');
 
 if (!defined('SENAYAN_BASE_DIR')) {
-    // main system configuration
     require '../../../../sysconfig.inc.php';
-    // start the session
     require SENAYAN_BASE_DIR.'admin/default/session.inc.php';
 }
 
 require SENAYAN_BASE_DIR.'admin/default/session_check.inc.php';
 
-// privileges checking
 $can_read = utility::havePrivilege('plugins', 'r');
 $can_write = utility::havePrivilege('plugins', 'w');
 
@@ -47,25 +44,30 @@ require('./func.php');
 
 list($host, $dir, $file) = scinfo();
 
+$alert = '';
+$script = '';
 if ($_POST)
 {
 	list($host, $dir, $file) = scinfo();
 	$get = (object) $_GET;
 	$post = (object) $_POST;
 	
-	
-	if (isset($get->hide) AND ! empty($get->hide))
-	{
-		
-	}
-	else if (isset($get->sort))
+	if (isset($get->sort))
 	{
 		unset($_POST['saveData']);
 		foreach($_POST['sort'] as $item_id => $items)
 		{
 			if (is_array($items))
 			{
-				if ($item_id != $items['parent'])
+				$sql = sprintf("SELECT `parent_id` FROM `plugins_menus_items` WHERE `item_id` = '%s' AND `parent_id` != 0", $items['parent']);
+				$rows = $dbs->query($sql);
+				if ($rows->num_rows > 0)
+				{
+					$row = (object) $rows->fetch_assoc();
+					$parent_of_parent = $row->parent_id;
+				}
+				$valid = ((isset($parent_of_parent) AND ($parent_of_parent != $item_id)) || ( ! isset($parent_of_parent))) ? true : false;
+				if ($item_id != $items['parent'] AND $valid === true)
 				{
 					$parent_id = ! is_numeric($items['parent']) ? 0 : $items['parent'];
 					$sql = sprintf("UPDATE `plugins_menus_items` "
@@ -76,7 +78,6 @@ if ($_POST)
 						$item_id
 					);
 					$dbs->query($sql);
-					
 				}
 			}
 		}
@@ -88,7 +89,7 @@ if ($_POST)
 		if (isset($post->item))
 		{
 			$alert = __('Menu item has been deleted!');
-			$script = "parent.$('#mainContent').simbioAJAX('". $dir . "/');";
+			$script = "parent.$('#mainContent').simbioAJAX('". $dir . "/?menu=" . $get->menu . "');";
 			list($item, $parent, $path, $label, $hidden, $external, $weight, $customized) = menu_item_get($post->item);
 			$sql = sprintf("DELETE FROM `plugins_menus_items` WHERE `item_id` = '%s'", $item);
 			$dbs->query($sql);
@@ -105,6 +106,8 @@ if ($_POST)
 			$sql = sprintf("DELETE FROM `plugins_menus` WHERE `menu` = '%s'", $post->menu);
 			$dbs->query($sql);
 			$sql = sprintf("DELETE FROM `plugins_menus_items` WHERE `menu` = '%s'", $post->menu);
+			$dbs->query($sql);
+			$sql = sprintf("DELETE FROM `plugins_blocks` WHERE `plugin` = 'menu' AND `delta` = '%s'", $post->menu);
 			$dbs->query($sql);
 		}
 	}
@@ -140,6 +143,8 @@ if ($_POST)
 						$post->desc
 					);
 					$dbs->query($sql);
+					require('../s_blocks/func.php');
+					setup_block('menu', $post->menu, $post->title);
 				}
 			}
 		}
@@ -216,11 +221,78 @@ if ($_POST)
 		}
 		else if (isset($get->item) AND ! empty($get->item))
 		{
-			print_r($_POST);
-			print_r($_GET);
+			if ($valid['item'] === false || empty($post->path) || empty($post->label))
+				{
+					$alert = __('Menu item has not been saved!');
+					if ($valid['item'] === false || empty($post->path))
+						$script = "parent.$('input[name=path]').select();";
+					else
+						$script = "parent.$('input[name=label]').select();";
+				}
+				else
+				{
+					if (isset($get->menu) AND $post->parent == $get->menu)
+					{
+						$post->menu = $post->parent;
+						$post->parent = 0;
+					}
+					else if ($post->parent != $get->menu)
+					{
+						$post->menu = $get->menu;
+						if (is_numeric($post->parent))
+						{
+							$sql = sprintf("SELECT `menu` FROM `plugins_menus_items` WHERE `parent_id` = '%s'", $post->parent);
+							$rows = $dbs->query($sql);
+							if ($rows->num_rows > 0)
+							{
+								$row = (object) $rows->fetch_assoc();
+								$post->menu = $row->menu;
+							}
+						}
+						else
+						{
+							$post->menu = $post->parent;
+							$post->parent = 0;
+						}
+					}
+					$alert = __('Menu item has been saved!');
+					$script = "parent.$('#mainContent').simbioAJAX('". $dir . "/?menu=" . $post->menu . "');";
+					$sql = sprintf("UPDATE `plugins_menus_items` "
+						. "SET `menu` = '%s', `path` = '%s', `label` = '%s', `desc` = '%s', `parent_id` = '%s', `weight` = '%s' "
+						. "WHERE `item_id` = '%s'",
+						$post->menu,
+						$post->path,
+						$post->label,
+						$post->desc,
+						$post->parent,
+						$post->weight,
+						$get->item
+					);
+					$dbs->query($sql);
+				}
 		}
 	}
-
-	echo "<html><head><script type=\"text/javascript\">alert('$alert');$script</script></head><body></body></html>";
+	if ( ! empty($alert) AND ! empty($script))
+	{
+		echo "<html><head><script type=\"text/javascript\">alert('$alert');$script</script></head><body></body></html>";
+	}
 }
+else
+{
+	$get = (object) $_GET;
+	if (isset($get->hide) AND ! empty($get->hide))
+	{
+		$sql = sprintf("UPDATE `plugins_menus_items` "
+			. "SET `hidden` = 1 WHERE `item_id` = '%s'", $get->hide);
+		$dbs->query($sql);
+	}
+	else if (isset($get->unhide) AND ! empty($get->unhide))
+	{
+		$sql = sprintf("UPDATE `plugins_menus_items` "
+			. "SET `hidden` = 0 WHERE `item_id` = '%s'", $get->unhide);
+		$dbs->query($sql);
+	}
+	header("Location: " . $dir . "/?menu=" . $get->menu);
+}
+
 exit();

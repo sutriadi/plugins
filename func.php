@@ -94,11 +94,23 @@ function scinfo()
  * @return
  *   combination of checkip, checken, checkref
  */
-function checkall()
+function checkall($array = array())
 {
-	checkip();
-	checken();
-	checkref();
+	if (count($array) > 0)
+	{
+		checkip();
+		checken();
+		checkref();
+	}
+	else
+	{
+		if (in_array('ip', $array))
+			checkip();
+		if (in_array('en', $array))
+			checken();
+		if (in_array('ref', $array))
+			checkref();
+	}
 }
 
 /*
@@ -437,10 +449,10 @@ function variable_set($name, $value, $method='none')
 	switch ($method)
 	{
 		case "json":
-			if (php_version() >= "5.3")
-				$value = json_encode($value, JSON_FORCE_OBJECT);
-			else
-				$value = json_encode($value);
+			$value = json_encode($value);
+			break;
+		case "serial":
+			$value = serialize($value);
 			break;
 		case "none":
 		default:
@@ -450,9 +462,9 @@ function variable_set($name, $value, $method='none')
 	$query = sprintf("SELECT `name` FROM `plugins_vars` WHERE `name`='%s'", $name);
 	$rows = $dbs->query($query);
 	if ($rows->num_rows != 0)
-		$query = sprintf("UPDATE `plugins_vars` SET `value`='%s' WHERE `name`='%s'", $value, $name);
+		$query = sprintf("UPDATE `plugins_vars` SET `value`='%s' WHERE `name`='%s'", addslashes($value), $name);
 	else
-		$query = sprintf("INSERT INTO `plugins_vars` (`name`, `value`) VALUES ('%s', '%s')", $name, $value);
+		$query = sprintf("INSERT INTO `plugins_vars` (`name`, `value`) VALUES ('%s', '%s')", $name, addslashes($value));
 	$dbs->query($query);
 
 	$conf[$name] = $value;
@@ -489,7 +501,7 @@ function variable_del($name)
  * @return
  *   none
  */
-function variable_get($name, $default = NULL)
+function variable_get($name, $default = NULL, $method = 'none')
 {
 	global $conf;
 	global $dbs;
@@ -502,7 +514,7 @@ function variable_get($name, $default = NULL)
 		if ($rows->num_rows > 0)
 		{
 			$row = $rows->fetch_assoc();
-			$value = $row['value'];
+			$value = stripslashes($row['value']);
 			$conf[$name] = $value;
 			$_SESSION['plugins_vars'] = $conf;
 		}
@@ -510,6 +522,18 @@ function variable_get($name, $default = NULL)
 	else
 	{
 		$value = $conf[$name];
+	}
+	switch ($method)
+	{
+		case "json":
+			$value = json_decode($value);
+			break;
+		case "serial":
+			$value = unserialize($value);
+			break;
+		case "none":
+		default:
+			$value = $value;
 	}
 
 	return $value;

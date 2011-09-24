@@ -23,15 +23,12 @@
 define('INDEX_AUTH', '1');
 
 if (!defined('SENAYAN_BASE_DIR')) {
-    // main system configuration
     require '../../../../sysconfig.inc.php';
-    // start the session
     require SENAYAN_BASE_DIR.'admin/default/session.inc.php';
 }
 
 require SENAYAN_BASE_DIR.'admin/default/session_check.inc.php';
 
-// privileges checking
 $can_read = utility::havePrivilege('plugins', 'r');
 $can_write = utility::havePrivilege('plugins', 'w');
 
@@ -90,9 +87,7 @@ if ($_POST)
 		$post->region = isset($post->region) ? $post->region : 'none';
 		$post->weight = isset($post->weight) ? $post->weight : 0;
 		$post->classes = isset($post->classes) ? trim($post->classes) : '';
-/*
-		$post->classes = ( ! preg_match("/^([-a-z0-9_-])+$/", $post->classes)) ? $post->classes : '';
-*/
+		$post->classes = ( ! preg_match("/^([-a-z0-9_-])+$/", str_replace(' ', '', $post->classes))) ? '' : $post->classes;
 		if (isset($post->desc) AND isset($post->code) AND isset($post->filter))
 		{
 			$post->desc = isset($post->desc) ? trim($post->desc) : '';
@@ -179,26 +174,7 @@ if ($_POST)
 					$post->filter
 				);
 				$dbs->query($sql);
-				$themes = list_avtheme();
-				if (count($themes) > 0)
-				{
-					$sqlth = "INSERT INTO `plugins_blocks` (`plugin`, `delta`, `theme`, `title`) VALUES ";
-					$valth = array();
-					foreach ($themes as $th_id => $th_name)
-					{
-						$valth[] = sprintf("('%s', '%s', '%s', '%s')",
-							'block',
-							$post->block,
-							$th_id,
-							$post->title
-						);
-					}
-					$valsth = implode(", ", $valth);
-					$sqlth .= $valsth;
-				}
-				$dbs->query($sqlth);
-				unset($valth);
-				unset($valsth);
+				setup_block('block', $post->block, $post->title);
 			}
 		}
 	}

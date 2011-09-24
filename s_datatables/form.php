@@ -156,7 +156,7 @@ if (isset($_GET) AND isset($_GET['cols']))
 
 <form name="mainForm" id="mainForm" method="POST" action="<?php echo $dir . "/setup.php?act=del";?>" target="submitExec">
 <p>
-	<?php echo __('Are you sure to delete table');?>: <strong><?php echo $table;?></strong>
+	<?php echo __('Are you sure to delete table');?>: <strong><?php echo isset($title) ? $title : $table;?></strong>?
 	<input type="hidden" name="table" value="<?php echo $table;?>" />
 	<input type="submit" value="<?php echo __('Delete');?>" />
 	<input type="button" onclick="parent.$('#mainContent').simbioAJAX('<?php echo $dir . '/';?>');" value="<?php echo __('Cancel');?>" />
