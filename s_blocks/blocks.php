@@ -59,9 +59,11 @@ function block_core($op = 'list', $delta = 0)
 			$blocks = array();
 			$blocks['advanced_search'] = array('desc' => __('Advanced Search'));
 			$blocks['award'] = array('desc' => __('Award'));
-			$blocks['search'] = array('desc' => __('Search'));
 			$blocks['language'] = array('desc' => __('Language'));
 			$blocks['license'] = array('desc' => __('License'));
+			$blocks['librarian_login'] = array('desc' => __('Librarian Login'));
+			$blocks['member_login'] = array('desc' => __('Member Login'));
+			$blocks['search'] = array('desc' => __('Search'));
 			$blocks['welcome'] = array('desc' => __('Welcome'));
 			break;
 	}

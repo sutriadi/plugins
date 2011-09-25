@@ -30,12 +30,12 @@ $theme_conf = variable_get('theme_' . $theme . '_settings', $defconf, 'serial');
 $theme_info = drupal_parse_info_file($theme_dir . '/tpl.info');
 $theme_info = isset($theme_info['features']) ? $theme_info['features'] : array_keys($defconf);
 $perm_search = (in_array('search', $theme_info)) ? '' : 'disabled';
-$perm_primary_links = (in_array('primary_links', $theme_info)) ? '' : 'disabled';
+$perm_main_links = (in_array('main_links', $theme_info)) ? '' : 'disabled';
 
 $value = array();
 $perm = array();
 $search = ($perm_search != 'disabled' AND isset($theme_conf['search']) AND $theme_conf['search'] == 'on') ? 'checked' : '';
-$primary_links = ($perm_primary_links != 'disabled' AND isset($theme_conf['primary_links']) AND $theme_conf['primary_links'] == 'on') ? 'checked' : '';
+$main_links = ($perm_main_links != 'disabled' AND isset($theme_conf['main_links']) AND $theme_conf['main_links'] == 'on') ? 'checked' : '';
 
 ?>
 
@@ -60,13 +60,13 @@ $primary_links = ($perm_primary_links != 'disabled' AND isset($theme_conf['prima
 			</td>
 		</tr>
 		<tr valign="top">
-			<td class="alterCell" style="font-weight: bold;"><label for="primary_links" style="cursor: pointer;"><?php echo __('Primary Links');?></label></td>
+			<td class="alterCell" style="font-weight: bold;"><label for="main_links" style="cursor: pointer;"><?php echo __('Main Links');?></label></td>
 			<td class="alterCell" style="font-weight: bold; width: 1%;">:</td>
 			<td class="alterCell2">
-				<input id="primary_links" name="primary_links" type="checkbox" size="50" <?php echo $primary_links;?> <?php echo $perm_primary_links;?> />
-					<label for="primary_links" style="cursor: pointer;"><?php echo __('Show');?></label>
+				<input id="main_links" name="main_links" type="checkbox" size="50" <?php echo $main_links;?> <?php echo $perm_main_links;?> />
+					<label for="main_links" style="cursor: pointer;"><?php echo __('Show');?></label>
 				<br />
-				<span><?php echo __('Check it if you want to display primary links.');?></span>
+				<span><?php echo __('Check it if you want to display main links.');?></span>
 			</td>
 		</tr>
 		<tr valign="top">

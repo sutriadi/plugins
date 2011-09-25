@@ -31,7 +31,11 @@ $opac_frontpage = variable_get('opac_frontpage', '');
 $ui_theme = variable_get('ui_theme', 'base');
 $ui_css_version = variable_get('ui_css_version', '');
 $allowed_tags = variable_get('allowed_tags', '<a> <em> <strong> <cite> <code> <ul> <ol> <li> <dl> <dt> <dd>');
+$main_links = variable_get('main_links', 'primary-links');
+$main_links_items = variable_get('main_links_items', 'top');
+
 $nodir = array('.', '..');
+$links_type = array('top' => __('Top items only'), 'full' => __('All items'));
 
 require(SENAYAN_BASE_DIR . 'template/fatin/php/function.php');
 $list_avtheme = list_avtheme();
@@ -61,6 +65,33 @@ foreach ($dirs_ui_theme as $file_ui_theme)
 			$file_ui_theme
 		);
 	}
+}
+
+require(MODPLUGINS_BASE_DIR . 's_menus/func.php');
+$list_menu = set_parent_array('', false, true, 0, 0, false, false);
+$opt_main_links = '';
+foreach ($list_menu as $key => $val)
+{
+	if (is_array($val))
+	{
+		$selected = ($main_links == $val['val']) ? 'selected' : '';
+		$opt_main_links .= sprintf('<option value="%s" %s>%s</option>',
+			$val['val'],
+			$selected,
+			$val['label']
+		);
+	}
+}
+
+$opt_main_links_items = '';
+foreach ($links_type as $key => $val)
+{
+	$selected = $key == $main_links_items ? 'selected' : '';
+	$opt_main_links_items .= sprintf('<option value="%s" %s>%s</option>',
+		$key,
+		$selected,
+		$val
+	);
 }
 
 ?>
@@ -130,6 +161,27 @@ foreach ($dirs_ui_theme as $file_ui_theme)
 				<input type="text" id="ui_css_version" name="ui_css_version" value="<?php echo $ui_css_version;?>" />
 				<br />
 				<span><?php echo __('Entry jQuery-UI CSS version. Leave blank or enter 0 for use css file without version.');?></span>
+			</td>
+		</tr>
+		<tr valign=top>
+			<th colspan="4"><?php echo __('Main Links');?></th>
+		</tr>
+		<tr valign="top">
+			<td class="alterCell" style="font-weight: bold;"><label for="main_links" style="cursor: pointer;"><?php echo __('Menu as Main Links');?></label></td>
+			<td class="alterCell" style="font-weight: bold; width: 1%;">:</td>
+			<td class="alterCell2">
+				<select id="main_links" name="main_links"><?php echo $opt_main_links;?></select>
+				<br />
+				<span><?php echo __('Select menu to use as main links.');?></span>
+			</td>
+		</tr>
+		<tr valign="top">
+			<td class="alterCell" style="font-weight: bold;"><label for="main_links_items" style="cursor: pointer;"><?php echo __('Main Links Itema');?></label></td>
+			<td class="alterCell" style="font-weight: bold; width: 1%;">:</td>
+			<td class="alterCell2">
+				<select id="main_links_items" name="main_links_items"><?php echo $opt_main_links_items;?></select>
+				<br />
+				<span><?php echo __('Select main links type.');?></span>
 			</td>
 		</tr>
 		<tr valign=top>

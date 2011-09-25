@@ -831,7 +831,7 @@ function defconf_theme()
 {
 	$defconf = array(
 		'search' => false,
-		'primary_links' => false,
+		'main_links' => false,
 	);
 	return $defconf;
 }

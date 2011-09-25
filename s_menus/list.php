@@ -52,6 +52,8 @@ if ($mode == 'menu'):
 			$add_item_click = "$('#mainContent').simbioAJAX('$dir/add.php?type=item&menu={$menu['menu']}');";
 			$edit_menu_click = "$('#mainContent').simbioAJAX('$dir/add.php?menu={$menu['menu']}');";
 			$del_menu_click = "$('#mainContent').simbioAJAX('$dir/add.php?act=del&menu={$menu['menu']}');";
+			$del_button = ! in_array($menu['menu'], array('primary-links', 'secondary-links')) ?
+				"<input type=\"button\" value=\"$del_menu_label\" onclick=\"$del_menu_click\" /> " : '';
 			$list_cat .= "<tr>"
 				. "<td>{$menu['menu']}</td>"
 				. "<td>{$menu['title']}</td>"
@@ -60,7 +62,7 @@ if ($mode == 'menu'):
 					. "<input type=\"button\" value=\"$list_item_label\" onclick=\"$list_item_click\" /> "
 					. "<input type=\"button\" value=\"$add_item_label\" onclick=\"$add_item_click\" /> "
 					. "<input type=\"button\" value=\"$edit_menu_label\" onclick=\"$edit_menu_click\" /> "
-					. "<input type=\"button\" value=\"$del_menu_label\" onclick=\"$del_menu_click\" /> "
+					. $del_button
 				. "</td>"
 			. "</tr>";
 			unset($add_item_click);

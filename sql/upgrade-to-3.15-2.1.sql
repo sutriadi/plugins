@@ -46,12 +46,14 @@ INSERT INTO `plugins_blocks` (`plugin`, `delta`, `theme`, `title`) VALUES
 ('menu', 'secondary-links', 'base', 'Secondary Links');
 
 INSERT INTO `plugins_blocks` (`plugin`, `delta`, `theme`, `title`) VALUES
-('core', 'search', 'base', 'Search'),
 ('core', 'advanced_search', 'base', 'Advanced Search'),
+('core', 'award', 'base', 'Award'),
 ('core', 'language', 'base', 'Language'),
+('core', 'librarian_login', 'base', 'Librarian Login'),
 ('core', 'license', 'base', 'License'),
-('core', 'welcome', 'base', 'Welcome'),
-('core', 'award', 'base', 'Award');
+('core', 'member_login', 'base', 'Member Login'),
+('core', 'search', 'base', 'Search'),
+('core', 'welcome', 'base', 'Welcome');
 
 CREATE TABLE `plugins_menus_items` (
   `menu` varchar(32) NOT NULL DEFAULT '',

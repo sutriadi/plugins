@@ -50,6 +50,9 @@ if ($_POST)
 	if (isset($post->ui_theme)) variable_set('ui_theme', $post->ui_theme);
 	if (isset($post->ui_css_version)) variable_set('ui_css_version', $post->ui_css_version);
 	if (isset($post->ui_css_version)) variable_set('allowed_tags', $post->allowed_tags);
+	if (isset($post->ui_css_version)) variable_set('allowed_tags', $post->allowed_tags);
+	if (isset($post->main_links)) variable_set('main_links', $post->main_links);
+	if (isset($post->main_links_items)) variable_set('main_links_items', $post->main_links_items);
 	
 	echo "<html><head><script type=\"text/javascript\">alert('" . __('Configuration has been saved!') . "');parent.$('#mainContent').simbioAJAX('". $dir . "/');</script></head><body></body></html>";
 	exit();

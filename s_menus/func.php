@@ -173,36 +173,61 @@ function menu_build_list($menu_items, $bullet = '+', $parent = 0, $level = 0)
  * @param
  * @return
  */
-function menu_build_links($menus, $parent = 0)
+function menu_build_links($menus, $parent = 0, $expand = true, $name = '')
 {
-	$list = '';
+	$list = array();
 	if (isset($menus['parents'][$parent]))
 	{
-		$list .= '<ul>';
+		$list[] = sprintf('<ul class="links %s">', $name);
+		$item_count_total = count($menus['parents'][$parent]);
+		$item_count_now = 1;
 		foreach ($menus['parents'][$parent] as $itemId)
 		{
-			if ( ! isset($menus['parents'][$itemId]))
+			$classes = array();
+			if ($item_count_now == 1)
+				$classes[] = 'first';
+			else if ($item_count_now == $item_count_total)
+				$classes[] = 'last';
+			$desc = stripslashes($menus['items'][$itemId]['desc']);
+			$label = stripslashes($menus['items'][$itemId]['label']);
+			$path = $menus['items'][$itemId]['path'];
+			if (substr($path, 0, 7) != 'http://' && substr($path, 0, 8) != 'https://')
+				$path = SENAYAN_WEB_ROOT_DIR . $path;
+			if ($path == $_SERVER['REQUEST_URI'])
+				$classes[] = 'active';
+			$active = in_array('active', $classes) ? true : false;
+			$classes = implode(' ', $classes);
+			if (isset($menus['parents'][$itemId]) AND $expand === true)
 			{
-				$list .= sprintf('<li><a href="%s">%s</a></li>',
-					$menus['items'][$itemId]['path'],
-					$menus['items'][$itemId]['label']
+				$classes .= ' expanded';
+				$list[] = sprintf('<li%s><a href="%s" title="%s">%s</a>%s</li>',
+					( ! empty($classes) ? sprintf(' class="%s"', $classes) : ''),
+					$path,
+					$desc,
+					($active === true ? ' class="active"' : ''),
+					$label,
+					menu_build_links($menus, $itemId)
 				);
 			}
 			else
 			{
-				$list .= sprintf('<li><a href="%s">%s</a>%s</li>',
-					$menus['items'][$itemId]['path'],
-					$menus['items'][$itemId]['label'],
-					menu_build_links($menus, $itemId)
+				$list[] = sprintf('<li%s><a href="%s" title="%s"%s>%s</a></li>',
+					( ! empty($classes) ? sprintf(' class="%s"', $classes) : ''),
+					$path,
+					$desc,
+					($active === true ? ' class="active"' : ''),
+					$label
 				);
 			}
+			$item_count_now++;
 		}
-		$list .= '</ul>';
+		$list[] = '</ul>';
 	}
+	$list = implode("\n", $list);
 	return $list;
 }
 
-function menu_build_array($menus, $parent = 0, $level = 0)
+function menu_build_array($menus, $parent = 0, $level = 0, $expand = true, $bullet = '-')
 {
 	$array = array();
 	if (isset($menus['parents'][$parent]))
@@ -210,10 +235,13 @@ function menu_build_array($menus, $parent = 0, $level = 0)
 		foreach ($menus['parents'][$parent] as $itemId)
 		{
 			$tolevel = $level;
-			$array[] = array('val' => $menus['items'][$itemId]['item_id'],
-				'label' => str_repeat('-', $tolevel+1) . $menus['items'][$itemId]['label']
+			$array[] = array(
+				'val' => $menus['items'][$itemId]['item_id'],
+				'label' => str_repeat($bullet, $tolevel+1) . $menus['items'][$itemId]['label'],
+				'path' => $menus['items'][$itemId]['path'],
+				'desc' => $menus['items'][$itemId]['desc']
 			);
-			if (isset($menus['parents'][$itemId]))
+			if (isset($menus['parents'][$itemId]) AND $expand === true)
 			{
 				$tolevel++;
 				$array = array_merge($array, menu_build_array($menus, $itemId, $tolevel));
@@ -223,7 +251,7 @@ function menu_build_array($menus, $parent = 0, $level = 0)
 	return $array;
 }
 
-function set_parent_array($menu = '')
+function set_parent_array($menu = '', $admin = true, $include = true, $parent = 0, $level = 0, $expand = true, $items = true, $bullet = '-')
 {
 	global $dbs;
 	
@@ -236,9 +264,18 @@ function set_parent_array($menu = '')
 	{
 		while ($row = $rows->fetch_assoc())
 		{
-			$array[] = array('val' => $row['menu'], 'label' => ! empty($menu) ? __('&lt;Root&gt;') : sprintf('&lt;%s&gt;', $row['title']));
-			$menus = menu_items_get($row['menu']);
-			$array = array_merge($array, menu_build_array($menus));
+			if ($include === true)
+			{
+				$array[] = array(
+					'val' => $row['menu'],
+					'label' => $admin === true ? ( ! empty($menu) ? __('&lt;Root&gt;') : sprintf('&lt;%s&gt;', $row['title'])) : $row['title']
+				);
+			}
+			if ($items === true)
+			{
+				$menus = menu_items_get($row['menu']);
+				$array = array_merge($array, menu_build_array($menus, $parent, $level, $expand, $bullet));
+			}
 		}
 	}
 	return $array;
