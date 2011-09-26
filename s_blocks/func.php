@@ -20,6 +20,13 @@
  *      MA 02110-1301, USA.
  */
 
+if ( ! defined('MODPLUGINS_WEB_ROOT_DIR'))
+	define('MODPLUGINS_WEB_ROOT_DIR', MODULES_WEB_ROOT_DIR . 'plugins/');
+if ( ! defined('MODPLUGINS_BASE_DIR'))
+	define('MODPLUGINS_BASE_DIR', MODULES_BASE_DIR . 'plugins/');
+
+require(MODPLUGINS_BASE_DIR . 's_blocks/blocks.php');
+
 /*
  * 
  * name: block_get
@@ -165,15 +172,14 @@ function block_all_list($return = false)
 		}
 	}
 	
-	require('./blocks.php');
-	$preblocks['core'] = block_core();
 	$preblocks['menu'] = block_menu();
+	$preblocks['core'] = block_core();
 
 	$info = drupal_parse_info_file($theme_dir . '/tpl.info');
 
 	$info['regions'] = block_get_regions();
 
-	$sql = "SELECT * FROM `plugins_blocks` WHERE `theme` = '%s' ORDER BY `region` ASC, `weight` ASC";
+	$sql = "SELECT * FROM `plugins_blocks` WHERE `theme` = '%s' ORDER BY `region` ASC, `weight` ASC, `delta` ASC";
 	$sqlf = sprintf($sql, $theme);
 	$rows = $dbs->query($sqlf);
 	$num_rows = $rows->num_rows;
@@ -186,9 +192,11 @@ function block_all_list($return = false)
 				$preblocks[$row['plugin']][$row['delta']]['desc'] => array(
 					'block' => $row['plugin'],
 					'delta' => $row['delta'],
+					'title' => $row['title'],
 					'theme' => $row['theme'],
 					'weight' => isset($row['weight']) ? $row['weight'] : 0,
 					'desc' => $preblocks[$row['plugin']][$row['delta']]['desc'],
+					'classes' => ! empty($row['classes']) ? explode(' ', trim($row['classes'])) : array(),
 				)
 			);
 			if (isset($row['region']) AND ! empty($row['region']))

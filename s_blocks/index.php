@@ -27,7 +27,10 @@ if (!defined('SENAYAN_BASE_DIR')) {
     require SENAYAN_BASE_DIR.'admin/default/session.inc.php';
 }
 
-define('MODPLUGINS_WEB_ROOT_DIR', MODULES_WEB_ROOT_DIR . 'plugins/');
+if ( ! defined('MODPLUGINS_WEB_ROOT_DIR'))
+	define('MODPLUGINS_WEB_ROOT_DIR', MODULES_WEB_ROOT_DIR . 'plugins/');
+if ( ! defined('MODPLUGINS_BASE_DIR'))
+	define('MODPLUGINS_BASE_DIR', MODULES_BASE_DIR . 'plugins/');
 
 require SENAYAN_BASE_DIR.'admin/default/session_check.inc.php';
 
