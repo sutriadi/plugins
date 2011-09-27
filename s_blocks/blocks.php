@@ -59,9 +59,27 @@ function block_block($op = 'view', $delta = 0)
 {
 	$blocks = array();
 	list($block, $desc, $title, $code, $filter) = block_custom_get($delta);
+	switch ($filter)
+	{
+		case "text":
+			$content = nl2br(htmlentities($code));
+			break;
+		case "simple":
+			$content = nl2br(strip_tags($code, variable_get('allowed_tags')));
+			break;
+		case "php":
+			ob_start();
+			print eval('?>' . nl2br($code));
+			$content = ob_get_contents();
+			ob_end_clean();
+			break;
+		case "full":
+		default:
+			$content = nl2br($code);
+	}
 	$blocks[$delta] = array(
 		'title' => $title,
-		'content' => $code
+		'content' => $content
 	);
 	return $blocks;
 }
