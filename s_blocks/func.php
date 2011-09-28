@@ -218,8 +218,8 @@ function block_all_list($return = false)
 	else if ($num_rows == 0 AND $return === false)
 	{
 		$sqli = sprintf("INSERT INTO `plugins_blocks` "
-			. "(`plugin`, `delta`, `theme`, `region`, `weight`) "
-			. "(SELECT `plugin`, `delta`, '%s', `region`, `weight` FROM plugins_blocks WHERE `theme` = 'base')",
+			. "(`plugin`, `delta`, `theme`, `title`, `region`, `weight`) "
+			. "(SELECT `plugin`, `delta`, '%s', `title`, `region`, `weight` FROM plugins_blocks WHERE `theme` = 'base')",
 			$theme
 		);
 		$dbs->query($sqli);

@@ -107,4 +107,4 @@ CREATE TABLE `plugins_menus_items` (
   `customized` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`item_id`),
   KEY `path_menu` (`path`(128),`menu`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;

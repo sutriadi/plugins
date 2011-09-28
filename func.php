@@ -501,7 +501,7 @@ function variable_del($name)
  * @return
  *   none
  */
-function variable_get($name, $default = NULL, $method = 'none')
+function variable_get($name, $default = '', $method = 'none')
 {
 	global $conf;
 	global $dbs;
@@ -815,6 +815,9 @@ function list_avtheme()
 				$info = drupal_parse_info_file($info_file);
 				$opac_themes[$file] = isset($info['name']) ? $info['name'] : $file;
 			}
+			$setting = 'theme_' . $file . '_settings';
+			if (variable_get($setting, '', 'serial') == '')
+				variable_set($setting, '', 'serial');
 		}
 		$_SESSION['opac_themes'] = $opac_themes;
 	}
