@@ -1,5 +1,5 @@
 Plugins Module for SLiMS
-Version 3.15-2.1 "Nantu" build 10120224092011
+Version 3.15-2.1 "Nantu" build 21561301102011
 
 Copyright (c) 1431-1432 H / 2010-2011 M
 Indra Sutriadi Pipii (indra@sutriadi.web.id)
@@ -45,12 +45,11 @@ Tidak semua data di database dihapus ketika instalasi dihapus.
 Untuk menghapus secara permanen import data sql/remove.sql ke database
 
 SAY THANKS TO:
-- Drupal Core Development Team http://drupal.org
-- danielizer, author of
-  http://wizardinternetsolutions.com/web-database-design/single-query-dynamic-multi-level-menu/
+- Drupal Core Development Team, http://drupal.org
+- danielizer, author of http://wizardinternetsolutions.com/web-database-design/single-query-dynamic-multi-level-menu/
 
 CHANGELOG
-27.09.2011 (RC2)
+01.10.2011 (RC3)
 - penambahan submodul block, theme dan menu
 - penambahan metode serial untuk penyimpanan variable
 - penambahan file SQL remove data moduk Plugins

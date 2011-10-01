@@ -57,7 +57,7 @@ function php_version()
 function ipconfirmation()
 {
 	$confirmation = false;
-	$allowed_ip = json_decode(variable_get('allowed_ip', '["127.0.0.1", "::1"]'), true);
+	$allowed_ip = variable_get('allowed_ip', '["127.0.0.1", "::1"]', 'json');
 	
 	foreach ($allowed_ip as $ip) {
 		if ($ip == remote_addr()) {
@@ -625,7 +625,7 @@ function ip_info($detail = true)
 	$info = __('You access this page from IP address') . $r;
 	if ($detail === true)
 	{
-		$rs = sprintf(': <strong>%s</strong>', implode(', ', json_decode(variable_get('allowed_ip', '["127.0.0.1", "::1"]'), true)));
+		$rs = sprintf(': <strong>%s</strong>', implode(', ', variable_get('allowed_ip', '["127.0.0.1", "::1"]', 'json')));
 		$info .= __(' This page can be accessed from the following IP addresses') . $rs;
 	}
 	return $info;

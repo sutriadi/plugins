@@ -25,7 +25,7 @@ if (!defined('MODULES_WEB_ROOT_DIR')) {
 }
 
 list($host, $dir, $file) = scinfo();
-$allowed_ip = implode(" ", json_decode(variable_get('allowed_ip', '["127.0.0.1", "::1"]'), true));
+$allowed_ip = implode(" ", variable_get('allowed_ip', '["127.0.0.1", "::1"]', 'json'));
 $opac_theme = variable_get('opac_theme', 'base');
 $opac_frontpage = variable_get('opac_frontpage', '');
 $ui_theme = variable_get('ui_theme', 'base');
