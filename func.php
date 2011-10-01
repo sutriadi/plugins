@@ -833,6 +833,9 @@ function list_avtheme()
 function defconf_theme()
 {
 	$defconf = array(
+		'logo' => false,
+		'title' => false,
+		'subtitle' => false,
 		'search' => false,
 		'main_links' => false,
 	);

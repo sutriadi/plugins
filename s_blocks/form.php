@@ -169,7 +169,10 @@ foreach ($filters as $f => $val)
 			<td class="alterCell2">
 				<input id="classes" name="classes" type="text" size="50" value="<?php echo $classes;?>" />
 				<br />
-				<span><?php echo __('Type additional classes for current block. Separate with space');?></span>
+				<span>
+					<?php echo __('Type the name of the CSS class that will be added to the block.');?>
+					<?php echo __('You may define multiples classes separated by spaces.');?>
+				</span>
 			</td>
 		</tr>
 	<?php endif; ?>

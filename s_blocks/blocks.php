@@ -160,7 +160,7 @@ function block_core_advanced_search()
 		$colltype_list,
 		__('Location'),
 		$location_list,
-		__('Advanced Search')
+		__('Search!')
 	);
 
 	$block = array(
@@ -237,25 +237,35 @@ function block_core_librarian_login()
 
 function block_core_member_login()
 {
-	$content = '<form action="%s" method="post">'
-		. '<p><span id="info">%s</span></p>'
-		. '<p>'
-			. '<label for="memberID">%s</label>'
-			. '<input type="text" id="memberID" name="memberID" class="text login" class="text" />'
-		. '</p>'
-		. '<p>'
-			. '<label for="memberPassWord">%s</label>'
-			. '<input type="password" id="memberPassWord" name="memberPassWord" class="text login" class="text" />'
-		. '</p>'
-		. '<p><input type="submit" name="logMeIn" value="%s" id="loginButton" class="text button" /></p>'
-	. '</form>';
-	$content = sprintf($content,
-		SENAYAN_WEB_ROOT_DIR . '/?p=member',
-		__('Sign in to your account'),
-		__('Member ID'),
-		__('Password'),
-		__('Logon')
-	);
+	if (utility::isMemberLogin())
+	{
+		$content = sprintf('<ul class="links"><li><a href="%s">%s</a></li></ul>',
+			SENAYAN_WEB_ROOT_DIR . '?p=member&logout=1',
+			__('Logout')
+		);
+	}
+	else
+	{
+		$content = '<form action="%s" method="post">'
+			. '<p><span id="info">%s</span></p>'
+			. '<p>'
+				. '<label for="block-memberID">%s</label>'
+				. '<input type="text" id="block-memberID" name="memberID" class="text login" class="text" />'
+			. '</p>'
+			. '<p>'
+				. '<label for="block-memberPassWord">%s</label>'
+				. '<input type="password" id="block-memberPassWord" name="memberPassWord" class="text login" class="text" />'
+			. '</p>'
+			. '<p><input type="submit" name="logMeIn" value="%s" id="loginButton" class="text button" /></p>'
+		. '</form>';
+		$content = sprintf($content,
+			SENAYAN_WEB_ROOT_DIR . '/?p=member',
+			__('Sign in to your account'),
+			__('Member ID'),
+			__('Password'),
+			__('Logon')
+		);
+	}
 
 	$block = array(
 		'title' => __('Member Login'),
@@ -269,15 +279,15 @@ function block_core_search()
 	$content = '<form action="%s" accept-charset="UTF-8" method="get" id="search-theme-form">'
 		. '<div class="form-item" id="search-form-wrapper">'
 		. '<label for="keywords">%s: </label>'
-		. '<input maxlength="128" id="keywords" name="keywords" style="width: %s;" value="%s" title="Enter the terms you wish to search for." class="form-text" type="text" />'
+		. '<input maxlength="128" id="keywords" name="keywords" value="%s" title="Enter the terms you wish to search for." class="text" type="text" />'
 		. '</div>'
-		. '<input name="search" value="%s" class="form-submit" type="submit" />'
+		. '<input name="search" value="%s" class="button" type="submit" />'
 		. '</form>';
 	$keywords = isset($_GET['keywords']) ? $_GET['keywords'] : '';
 
 	$block = array(
 		'title' => __('Search'),
-		'content' => sprintf($content, SENAYAN_WEB_ROOT_DIR, __('Keywords'), '90%', $keywords, __('Search'))
+		'content' => sprintf($content, SENAYAN_WEB_ROOT_DIR, __('Keywords'), $keywords, __('Search!'))
 	);
 	return $block;
 }

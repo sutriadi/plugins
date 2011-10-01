@@ -29,14 +29,13 @@ $defconf = defconf_theme();
 $theme_conf = variable_get('theme_' . $theme . '_settings', $defconf, 'serial');
 $theme_info = drupal_parse_info_file($theme_dir . '/tpl.info');
 $theme_info = isset($theme_info['features']) ? $theme_info['features'] : array_keys($defconf);
-$perm_search = (in_array('search', $theme_info)) ? '' : 'disabled';
-$perm_main_links = (in_array('main_links', $theme_info)) ? '' : 'disabled';
-
-$value = array();
-$perm = array();
-$search = ($perm_search != 'disabled' AND isset($theme_conf['search']) AND $theme_conf['search'] == 'on') ? 'checked' : '';
-$main_links = ($perm_main_links != 'disabled' AND isset($theme_conf['main_links']) AND $theme_conf['main_links'] == 'on') ? 'checked' : '';
-
+$css_names = isset($theme_conf['css_names']) ? $theme_conf['css_names'] : '';
+foreach ($defconf as $feature => $turn)
+{
+	$var = 'perm_' . $feature;
+	$$var = in_array($feature, $theme_info) ? '' : 'disabled';
+	$$feature = (${$var} != 'disabled' AND isset($theme_conf[$feature]) AND $theme_conf[$feature] == 'on') ? 'checked' : '';
+}
 ?>
 
 <form name="mainForm" id="mainForm" enctype="multipart/form-data" method="POST" action="<?php echo $dir . "/setup.php" . $params;?>" target="submitExec">
@@ -77,6 +76,48 @@ $main_links = ($perm_main_links != 'disabled' AND isset($theme_conf['main_links'
 					<label for="search" style="cursor: pointer;"><?php echo __('Show');?></label>
 				<br />
 				<span><?php echo __('Check it if you want to display search box.');?></span>
+			</td>
+		</tr>
+		<tr valign="top">
+			<td class="alterCell" style="font-weight: bold;"><label for="logo" style="cursor: pointer;"><?php echo __('Logo');?></label></td>
+			<td class="alterCell" style="font-weight: bold; width: 1%;">:</td>
+			<td class="alterCell2">
+				<input id="logo" name="logo" type="checkbox" size="50" <?php echo $logo;?> <?php echo $perm_logo;?> />
+					<label for="logo" style="cursor: pointer;"><?php echo __('Show');?></label>
+				<br />
+				<span><?php echo __('Check it if you want to display logo.');?></span>
+			</td>
+		</tr>
+		<tr valign="top">
+			<td class="alterCell" style="font-weight: bold;"><label for="title" style="cursor: pointer;"><?php echo __('Title');?></label></td>
+			<td class="alterCell" style="font-weight: bold; width: 1%;">:</td>
+			<td class="alterCell2">
+				<input id="title" name="title" type="checkbox" size="50" <?php echo $title;?> <?php echo $perm_title;?> />
+					<label for="title" style="cursor: pointer;"><?php echo __('Show');?></label>
+				<br />
+				<span><?php echo __('Check it if you want to display title.');?></span>
+			</td>
+		</tr>
+		<tr valign="top">
+			<td class="alterCell" style="font-weight: bold;"><label for="subtitle" style="cursor: pointer;"><?php echo __('Subtitle');?></label></td>
+			<td class="alterCell" style="font-weight: bold; width: 1%;">:</td>
+			<td class="alterCell2">
+				<input id="subtitle" name="subtitle" type="checkbox" size="50" <?php echo $subtitle;?> <?php echo $perm_subtitle;?> />
+					<label for="subtitle" style="cursor: pointer;"><?php echo __('Show');?></label>
+				<br />
+				<span><?php echo __('Check it if you want to display subtitle.');?></span>
+			</td>
+		</tr>
+		<tr valign="top">
+			<td class="alterCell" style="font-weight: bold;"><label for="css_names" style="cursor: pointer;"><?php echo __('Additional Style');?></label></td>
+			<td class="alterCell" style="font-weight: bold; width: 1%;">:</td>
+			<td class="alterCell2">
+				<input id="css_names" name="css_names" type="text" size="50" value="<?php echo $css_names;?>" />
+				<br />
+				<span>
+					<?php echo __('Type the CSS class names that will be added to theme globally.');?>
+					<?php echo __('You may define multiples classes separated by spaces.');?>
+				</span>
 			</td>
 		</tr>
 	</table>
