@@ -191,9 +191,13 @@ function menu_build_links($menus, $parent = 0, $expand = true, $name = '')
 			$desc = stripslashes($menus['items'][$itemId]['desc']);
 			$label = stripslashes($menus['items'][$itemId]['label']);
 			$path = $menus['items'][$itemId]['path'];
+			if (in_array($path, array('index.php', '/', '[front]')))
+				$path = '';
 			if (substr($path, 0, 7) != 'http://' && substr($path, 0, 8) != 'https://')
 				$path = SENAYAN_WEB_ROOT_DIR . $path;
 			if ($path == $_SERVER['REQUEST_URI'])
+				$classes[] = 'active';
+			else if (in_array($_SERVER['REQUEST_URI'], array($path, $path . 'index.php')))
 				$classes[] = 'active';
 			$active = in_array('active', $classes) ? true : false;
 			$classes = implode(' ', $classes);

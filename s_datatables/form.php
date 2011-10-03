@@ -37,6 +37,7 @@ if ( ! empty($table))
 $types = array(
 	'member' => __('Member'),
 	'biblio' => __('Bibliography'),
+	'content' => __('Content'),
 );
 
 $opt_type = '';
@@ -51,16 +52,13 @@ if (isset($_GET) AND isset($_GET['cols']))
 {
 	$base_cols_name = array();
 	$base_cols_label = __('Base Columns');
+	$base_cols_name = base_cols_name($type);
 	if ($type == 'member')
-	{
-		$base_cols_name = base_cols_name('member');
 		$base_cols_label = __('Base Columns of Member');
-	}
 	else if ($type == 'biblio')
-	{
-		$base_cols_name = base_cols_name('biblio');
 		$base_cols_label = __('Base Columns of Bibliography');
-	}
+	else if ($type == 'content')
+		$base_cols_label = __('Base Columns of Content');
 
 	switch ($_GET['cols'])
 	{
@@ -293,7 +291,7 @@ if (isset($_GET) AND isset($_GET['cols']))
 			</td>
 		</tr>
 <?php elseif ($cols == 'sort'): ?>
-		<?php echo $form;?>
+		<?php echo isset($form) ? $form : '';?>
 <?php endif;?>
 	</table>
 	<table cellspacing="0" cellpadding="3" style="width: 100%; background-color: #dcdcdc;">

@@ -48,6 +48,7 @@ if ($_POST)
 	if (isset($post->opac_theme)) variable_set('opac_theme', $post->opac_theme);
 	if (isset($post->opac_frontpage)) variable_set('opac_fronpage', $post->opac_frontpage);
 	if (isset($post->ui_theme)) variable_set('ui_theme', $post->ui_theme);
+	if (isset($post->ui_theme_opac)) variable_set('ui_theme_opac', $post->ui_theme_opac);
 	if (isset($post->ui_css_version)) variable_set('ui_css_version', $post->ui_css_version);
 	if (isset($post->ui_css_version)) variable_set('allowed_tags', $post->allowed_tags);
 	if (isset($post->ui_css_version)) variable_set('allowed_tags', $post->allowed_tags);

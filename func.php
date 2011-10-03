@@ -597,7 +597,7 @@ function dtable_del($table)
  * @param $path boolean
  * @return $css_name string
  */
-function css_get($path = true)
+function css_get($type = 'plugin', $path = true)
 {
 	$version = trim(variable_get('ui_css_version', ''));
 	$fname = 'jquery-ui%s.css';
@@ -608,9 +608,31 @@ function css_get($path = true)
 	$css_name = sprintf($fname, '.custom');
 	if ($path === true)
 	{
-		$css_name = 'library/ui/css/' . variable_get('ui_theme') . '/' . $css_name;
+		$css_name = sprintf('library/ui/css/%s/%s',
+			$type == 'plugin' ? variable_get('ui_theme', 'base') : variable_get('ui_theme_opac', 'base'),
+			$css_name
+		);
 	}
 	return $css_name;
+}
+
+function set_opt_ui_theme($dir_ui_theme, $dirs_ui_theme, $ui_theme)
+{
+	$nodir = nodir();
+	$opt_ui_theme = '';
+	foreach ($dirs_ui_theme as $file_ui_theme)
+	{
+		if ( ! in_array($file_ui_theme, $nodir) AND is_dir($dir_ui_theme . $file_ui_theme))
+		{
+			$selected = ($ui_theme == $file_ui_theme) ? 'selected' : '';
+			$opt_ui_theme .= sprintf('<option value="%s" %s>%s</option>',
+				$file_ui_theme,
+				$selected,
+				$file_ui_theme
+			);
+		}
+	}
+	return $opt_ui_theme;
 }
 
 /*
@@ -629,6 +651,17 @@ function ip_info($detail = true)
 		$info .= __(' This page can be accessed from the following IP addresses') . $rs;
 	}
 	return $info;
+}
+
+/*
+ * 
+ * name: frontpage
+ * @param none
+ * @return string
+ */
+function frontpage()
+{
+	return SENAYAN_WEB_ROOT_DIR;
 }
 
 /*

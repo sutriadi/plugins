@@ -29,12 +29,12 @@ $allowed_ip = implode(" ", variable_get('allowed_ip', '["127.0.0.1", "::1"]', 'j
 $opac_theme = variable_get('opac_theme', 'base');
 $opac_frontpage = variable_get('opac_frontpage', '');
 $ui_theme = variable_get('ui_theme', 'base');
+$ui_theme_opac = variable_get('ui_theme_opac', 'base');
 $ui_css_version = variable_get('ui_css_version', '');
 $allowed_tags = variable_get('allowed_tags', '<a> <em> <strong> <cite> <code> <ul> <ol> <li> <dl> <dt> <dd>');
 $main_links = variable_get('main_links', 'primary-links');
 $main_links_items = variable_get('main_links_items', 'top');
 
-$nodir = array('.', '..');
 $links_type = array('top' => __('Top items only'), 'full' => __('All items'));
 
 require(SENAYAN_BASE_DIR . 'template/fatin/php/function.php');
@@ -53,19 +53,9 @@ foreach ($list_avtheme as $theme_dir => $theme_name)
 $dir_ui_theme = __DIR__ . '/../library/ui/css/';
 $dirs_ui_theme = scandir($dir_ui_theme);
 sort($dirs_ui_theme);
-$opt_ui_theme = '';
-foreach ($dirs_ui_theme as $file_ui_theme)
-{
-	if ( ! in_array($file_ui_theme, $nodir) AND is_dir($dir_ui_theme . $file_ui_theme))
-	{
-		$selected = ($ui_theme == $file_ui_theme) ? 'selected' : '';
-		$opt_ui_theme .= sprintf('<option value="%s" %s>%s</option>',
-			$file_ui_theme,
-			$selected,
-			$file_ui_theme
-		);
-	}
-}
+$opt_ui_theme = set_opt_ui_theme($dir_ui_theme, $dirs_ui_theme, $ui_theme);
+$opt_ui_theme_opac = set_opt_ui_theme($dir_ui_theme, $dirs_ui_theme, $ui_theme_opac);
+
 
 require(MODPLUGINS_BASE_DIR . 's_menus/func.php');
 $list_menu = set_parent_array('', false, true, 0, 0, false, false);
@@ -140,6 +130,15 @@ foreach ($links_type as $key => $val)
 				<input type="text" id="opac_frontpage" name="opac_frontpage" />
 				<br />
 				<span><?php echo __('Not implemented yet!');?></span>
+			</td>
+		</tr>
+		<tr valign="top">
+			<td class="alterCell" style="font-weight: bold;"><label for="ui_theme_opac" style="cursor: pointer;"><?php echo __('OPAC JQuery UI Theme');?></label></td>
+			<td class="alterCell" style="font-weight: bold; width: 1%;">:</td>
+			<td class="alterCell2">
+				<select id="ui_theme_opac" name="ui_theme_opac"><?php echo $opt_ui_theme_opac;?></select>
+				<br />
+				<span><?php echo __('Select jQuery-UI Theme to use in OPAC.');?></span>
 			</td>
 		</tr>
 		<tr valign=top>

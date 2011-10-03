@@ -2,7 +2,7 @@
 /*
  *      processing.php
  *      
- *      from examples_support, DataTables 1.7.5
+ *      from examples_support, DataTables 1.8.1
  *      Modified by Indra Sutriadi Pipii <indra.sutriadi@gmail.com>
  *      
  */
@@ -47,7 +47,7 @@
 	checkip();
 	checken($plugin);
 	checken($table, 'table');
-	checkref('host');
+	checkref('plugin');
 
 	// mengambil data table, nama kolom, kolom dan pengurutan kolom
 	$dtables = table_get($table);
@@ -63,7 +63,12 @@
 	$aColumns = $precols;
 	
 	/* Indexed column (used for fast and accurate table cardinality) */
-	$sIndexColumn = ($dtables[1] == 'member') ? 'member_id' : 'biblio_id';
+	if ($dtables[1] === 'member')
+		$sIndexColumn = 'member_id';
+	elseif ($dtables[1] === 'biblio')
+		$sIndexColumnt = 'biblio_id';
+	else
+		$sIndexColumnt = 'content_id';
 	
 	/* DB table to use */
 	$sTable = $dtables[1];
@@ -157,6 +162,10 @@
 	if ($dtables[1] == 'member')
 	{
 		$sJoin = " LEFT JOIN `mst_member_type` ON `mst_member_type`.`member_type_id` = `member`.`member_type_id` ";
+	}
+	else if ($dtables[1] == 'biblio')
+	{
+		$sJoin = "";
 	}
 	else
 	{

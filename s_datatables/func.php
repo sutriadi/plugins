@@ -159,6 +159,17 @@ function base_cols_name($type = 'member')
 {
 	switch ($type)
 	{
+		case 'content':
+			$base_cols_name = array(
+				'content_id' => __('ID'),
+				'content_title' => __('Title'),
+				'content_desc' => __('Description'),
+				'content_path' => __('Path'),
+				'input_date' => __('Post Date'),
+				'last_update' => __('Modified Date'),
+				'content_ownpage' => __('Owner'),
+			);
+			break;
 		case 'biblio':
 			$base_cols_name = array(
 				'biblio_id' => __('ID'),
@@ -237,6 +248,8 @@ function table_render($dtable, $table = true)
 {
 
 	global $base_cols_name, $fcols;
+	$info = table_get($dtable);
+	$type = $info[1];
 	$order_cols = cols_order_get($dtable);
 
 	if (count($order_cols) > 0)
@@ -280,7 +293,19 @@ function table_render($dtable, $table = true)
 			
 			if ($table === true)
 			{
-				$thead = '<thead><tr><th colspan="%d">' . __('Members Details') . '</th></tr><tr>';
+				switch ($type)
+				{
+					case 'biblio':
+						$details = __('Bibliographies Details');
+						break;
+					case 'content':
+						$details = __('Contents Details');
+						break;
+					case 'member':
+					default:
+						$details = __('Members Details');
+				}
+				$thead = '<thead><tr><th colspan="%d">' . $details . '</th></tr><tr>';
 				$tbody = '<tbody><tr><td colspan="%d" class="dataTables_empty">' . __('Loading data from server') . '</td></tr></tbody>';
 				$tfoot = '<tfoot><tr>';
 				$php_js = 'var phpDef = { %s };';
