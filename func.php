@@ -196,7 +196,7 @@ function checkref($mode = 'module')
 		if ($ref_path == $dest_path)
 			$ref = true;
 	}
-	if ( ! isset($ref))
+	if ($ref === false)
 		die(sprintf('<div>%s!</div>', __('Invalid referer')));
 	else
 		return;
