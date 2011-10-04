@@ -843,14 +843,15 @@ function list_avtheme()
 		foreach ($dirs as $file)
 		{
 			$info_file = $tpl_dir . $file . '/tpl.info';
-			if ( ! in_array($file, $nodir) AND is_dir($tpl_dir . $file) AND file_exists($info_file))
+			if ( ! in_array($file, $nodir) AND is_dir($tpl_dir . $file))
 			{
-				$info = drupal_parse_info_file($info_file);
+				if (file_exists($info_file))
+					$info = drupal_parse_info_file($info_file);
 				$opac_themes[$file] = isset($info['name']) ? $info['name'] : $file;
+				$setting = 'theme_' . $file . '_settings';
+				if (variable_get($setting, '', 'serial') == '')
+					variable_set($setting, '', 'serial');
 			}
-			$setting = 'theme_' . $file . '_settings';
-			if (variable_get($setting, '', 'serial') == '')
-				variable_set($setting, '', 'serial');
 		}
 		$_SESSION['opac_themes'] = $opac_themes;
 	}
