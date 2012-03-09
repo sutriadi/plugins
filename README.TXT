@@ -1,5 +1,5 @@
 Plugins Module for SLiMS
-Version 3.15-2.1 "Nantu" build 21561301102011
+Version 3.15-2.1 "Nantu" build 13041404012012
 
 Copyright (c) 1431-1432 H / 2010-2011 M
 Indra Sutriadi Pipii (indra@sutriadi.web.id)
@@ -9,6 +9,7 @@ Daily Development: https://github.com/sutriadi/plugins
 
 # Persyaratan System
 - SLiMS 3 Stable 15 "Matoa" (download di http://slims.web.id/)
+- Fatin theme base 3.15.2-0.1 (download di http://sutriadi.web.id/fatin)
 
 # Instalasi
 - ekstrak paket plugins-3.15-x.x.tar.gz
@@ -49,6 +50,12 @@ SAY THANKS TO:
 - danielizer, author of http://wizardinternetsolutions.com/web-database-design/single-query-dynamic-multi-level-menu/
 
 CHANGELOG
+04.01.2012 (RC5)
+- bug fixing: dataTables
+
+04.10.2011 (RC4)
+- bug fixing: dataTables
+
 01.10.2011 (RC3)
 - penambahan submodul block, theme dan menu
 - penambahan metode serial untuk penyimpanan variable

@@ -334,7 +334,7 @@ function labeltype($type)
  */
 function enable_plugins($key)
 {
-	global $dbs;
+	global $dbs, $sysconf;
 	$enplugins = $_SESSION['plugins_enabled'];
 	$avplugins = $_SESSION['plugins_available'];
 	$values = array();
@@ -501,7 +501,7 @@ function variable_del($name)
  * @return
  *   none
  */
-function variable_get($name, $default = '', $method = 'none')
+function variable_get($name, $default = '', $method = 'none', $object = false)
 {
 	global $conf;
 	global $dbs;
@@ -526,10 +526,10 @@ function variable_get($name, $default = '', $method = 'none')
 	switch ($method)
 	{
 		case "json":
-			$value = json_decode($value);
+			$value = $object === false ? json_decode($value, true) : json_decode($value);
 			break;
 		case "serial":
-			$value = unserialize($value);
+			$value = $object === false ? unserialize($value) : (object) unserialize($value);
 			break;
 		case "none":
 		default:
