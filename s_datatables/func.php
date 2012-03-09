@@ -68,7 +68,7 @@ function cols_get($table, $mode = 'array')
 	$base_cols = '';
 	$end_cols = '';
 	$php_code = false;
-	$add_func = '';
+	$add_code = '';
 	$windowed = false;
 	$rows = $dbs->query($sql);
 	$num_rows = $rows->num_rows;
@@ -161,64 +161,64 @@ function base_cols_name($type = 'member')
 	{
 		case 'content':
 			$base_cols_name = array(
-				'content_id' => __('ID'),
-				'content_title' => __('Title'),
-				'content_desc' => __('Description'),
-				'content_path' => __('Path'),
-				'input_date' => __('Post Date'),
-				'last_update' => __('Modified Date'),
-				'content_ownpage' => __('Owner'),
+				'content.content_id' => __('ID'),
+				'content.content_title' => __('Title'),
+				'content.content_desc' => __('Description'),
+				'content.content_path' => __('Path'),
+				'content.input_date' => __('Post Date'),
+				'content.last_update' => __('Modified Date'),
+				'content.content_ownpage' => __('Owner'),
 			);
 			break;
 		case 'biblio':
 			$base_cols_name = array(
-				'biblio_id' => __('ID'),
+				'biblio.biblio_id' => __('ID'),
 				'gmd_id' => __('GMD'), // to join table
-				'title' => __('Title'),
-				'isbn_issn' => __('ISBN/ISSN'),
-				'edition' => __('Edition'),
+				'biblio.title' => __('Title'),
+				'biblio.isbn_issn' => __('ISBN/ISSN'),
+				'biblio.edition' => __('Edition'),
 				'publisher_id' => __('Publisher'), // to join table
-				'publish_year' => __('Publishing Year'),
-				'collation' => __('Collation'),
-				'series_title' => __('Series Title'),
-				'call_number' => __('Call Number'),
-				'language_id' => __('Language'),
+				'biblio.publish_year' => __('Publishing Year'),
+				'biblio.collation' => __('Collation'),
+				'biblio.series_title' => __('Series Title'),
+				'biblio.call_number' => __('Call Number'),
+				'biblio.language_id' => __('Language'),
 				'publish_place_id' => __('Publishing Place'), // to join table
-				'classification' => __('Classification'),
-				'notes' => __('Abstract/Notes'),
-				'image' => __('Image'),
-				'spec_detail_info' => __('Specific Detail Info'),
-				'opac_hide' => __('Hide in Opac'),
-				'promoted' => __('Promote to Homepage'),
-				'input_date' => __('Input Date'),
-				'last_update' => __('Last Update'),
+				'biblio.classification' => __('Classification'),
+				'biblio.notes' => __('Abstract/Notes'),
+				'biblio.image' => __('Image'),
+				'biblio.spec_detail_info' => __('Specific Detail Info'),
+				'biblio.opac_hide' => __('Hide in Opac'),
+				'biblio.promoted' => __('Promote to Homepage'),
+				'biblio.input_date' => __('Input Date'),
+				'biblio.last_update' => __('Last Update'),
 			);
 			break;
 		case 'member':
 		default:
 			$base_cols_name = array(
-				'member_id' => __('ID'),
-				'member_name' => __('Name'),
-				'gender' => __('Gender'),
-				'birth_date' => __('Birth Date'),
-				'member_type_name' => __('Type'), // to join table
-				'member_address' => __('Address'),
-				'member_mail_address' => __('Mail Address'),
-				'member_email' => __('E-Mail'),
-				'postal_code' => __('Zip Code'),
-				'inst_name' => __('Institution'),
-				'member_image' => __('Photo'),
-				'member_phone' => __('Phone'),
-				'member_fax' => __('Fax'),
-				'member_since_date' => __('Member Since'),
-				'register_date' => __('Register Date'),
-				'expire_date' => __('Expire Date'),
-				'member_notes' => __('Notes'),
-				'is_pending' => __('Pending Membership'),
-				'last_login' => __('Last Login'),
-				'last_login_ip' => __('Last Login From'),
-				'input_date' => __('Input Date'),
-				'last_update' => __('Last Update'),
+				'member.member_id' => __('ID'),
+				'member.member_name' => __('Name'),
+				'member.gender' => __('Gender'),
+				'member.birth_date' => __('Birth Date'),
+				'mst_member_type.member_type_name' => __('Type'), // to join table
+				'member.member_address' => __('Address'),
+				'member.member_mail_address' => __('Mail Address'),
+				'member.member_email' => __('E-Mail'),
+				'member.postal_code' => __('Zip Code'),
+				'member.inst_name' => __('Institution'),
+				'member.member_image' => __('Photo'),
+				'member.member_phone' => __('Phone'),
+				'member.member_fax' => __('Fax'),
+				'member.member_since_date' => __('Member Since'),
+				'member.register_date' => __('Register Date'),
+				'member.expire_date' => __('Expire Date'),
+				'member.member_notes' => __('Notes'),
+				'member.is_pending' => __('Pending Membership'),
+				'member.last_login' => __('Last Login'),
+				'member.last_login_ip' => __('Last Login From'),
+				'member.input_date' => __('Input Date'),
+				'member.last_update' => __('Last Update'),
 			);
 	}
 	return $base_cols_name;
@@ -393,17 +393,22 @@ function table_render($dtable, $table = true)
 					$v_str = implode(', ', $v_arr);
 					$php_js = sprintf($php_js, $v_str);
 				}
+				else
+				{
+					$php_js = sprintf($php_js, '');
+				}
 			}
 		}
 	}
 	
 	if ($table === true)
 	{
-		return array('php_js' => $php_js,
-			'thead' => $thead,
-			'tbody' => $tbody,
-			'tfoot' => $tfoot
-		);
+		$return = array();
+		$return['php_js'] = isset($php_js) ? $php_js : '';
+		$return['thead'] = isset($thead) ? $thead : '';
+		$return['tbody'] = isset($tbody) ? $tbody : '';
+		$return['tfoot'] = isset($tfoot) ? $tfoot : '';
+		return $return;
 	}
 	else
 	{

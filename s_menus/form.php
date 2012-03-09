@@ -43,6 +43,7 @@ if ( ! empty($menu))
 		$mode = 'item';
 		$params .= '&item=' . $item;
 	}
+	$as_main_links = variable_get('main_links', '') == $menu ? 'checked' : '';
 }
 
 ?>
@@ -92,7 +93,9 @@ if ( ! empty($menu))
 			<td class="alterCell2">
 				<input id="menu" name="menu" type="text" size="50" value="<?php echo $menu;?>" <?php echo $ro_menu;?> />
 				<br />
-				<span><?php echo __('A unique name to construct the URL for the menu. It must only contain lowercase letters, numbers, underscore or dash.');?></span>
+				<span>
+					<?php echo __('A unique name to construct the URL for the menu. It must only contain lowercase letters, numbers, underscore or dash.');?>
+				</span>
 			</td>
 		</tr>
 		<tr valign="top">
@@ -101,7 +104,7 @@ if ( ! empty($menu))
 			<td class="alterCell2">
 				<input id="title" name="title" type="text" size="50" value="<?php echo $title;?>" />
 				<br />
-				<span><?php echo __('Display name of menu');?></span>
+				<span><?php echo __('Display name of menu.');?></span>
 			</td>
 		</tr>
 		<tr valign="top">
@@ -110,7 +113,17 @@ if ( ! empty($menu))
 			<td class="alterCell2">
 				<input id="desc" name="desc" type="text" size="50" value="<?php echo $desc;?>" />
 				<br />
-				<span><?php echo __('Description of your menu');?></span>
+				<span><?php echo __('Description of your menu.');?></span>
+			</td>
+		</tr>
+		<tr valign="top">
+			<td class="alterCell" style="font-weight: bold;"><label for="as_main_links" style="cursor: pointer;"><?php echo __('Main Links');?></label></td>
+			<td class="alterCell" style="font-weight: bold; width: 1%;">:</td>
+			<td class="alterCell2">
+				<input id="as_main_links" name="as_main_links" size="50" type="checkbox" <?php echo $as_main_links;?> />
+				<label for="as_main_links" style="cursor: pointer;"><?php echo __('Yes!');?></label>
+				<br />
+				<span><?php echo __('Check it if you want to use this menu as main links.');?></span>
 			</td>
 		</tr>
 	</table>

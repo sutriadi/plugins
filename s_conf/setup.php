@@ -44,7 +44,7 @@ if ($_POST)
 {
 	list($host, $dir, $file) = scinfo();
 	$post = (object) $_POST;
-	if (isset($post->ips)) variable_set('allowed_ip', explode(" ", $post->ips), "json");
+	if (isset($post->allowed_ip)) variable_set('allowed_ip', explode(" ", $post->allowed_ip), "json");
 	if (isset($post->opac_theme)) variable_set('opac_theme', $post->opac_theme);
 	if (isset($post->opac_frontpage)) variable_set('opac_fronpage', $post->opac_frontpage);
 	if (isset($post->ui_theme)) variable_set('ui_theme', $post->ui_theme);

@@ -47,7 +47,9 @@
 	checkip();
 	checken($plugin);
 	checken($table, 'table');
+/*
 	checkref('plugin');
+*/
 
 	// mengambil data table, nama kolom, kolom dan pengurutan kolom
 	$dtables = table_get($table);
@@ -211,10 +213,16 @@
 		ob_get_contents();
 		ob_end_clean();
 	}
+	
+	foreach ($aColumns as $key => $value)
+	{
+		$aColumns[$key] = str_replace('.', '', strstr($value, '.'));
+	}
 
 	/*
 	 * Output
 	 */
+
 	$sEcho = isset($_POST['sEcho']) ? $_POST['sEcho'] : '';
 	$sOutput = '{' .
 		'"sEcho": '.$sEcho.', ' .

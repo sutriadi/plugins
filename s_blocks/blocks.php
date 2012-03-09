@@ -208,25 +208,33 @@ function block_core_license()
 
 function block_core_librarian_login()
 {
-	$content = '<form action="%s" method="post">'
-		. '<p><span id="info">%s</span></p>'
-		. '<p>'
-			. '<label for="userName">%s</label>'
-			. '<input type="text" id="userName" name="userName" class="text login" class="text" />'
-		. '</p>'
-		. '<p>'
-			. '<label for="passWord">%s</label>'
-			. '<input type="password" id="passWord" name="passWord" class="text login" class="text" />'
-		. '</p>'
-		. '<p><input type="submit" name="logMeIn" value="%s" id="loginButton" class="text button" /></p>'
-	. '</form>';
-	$content = sprintf($content,
-		SENAYAN_WEB_ROOT_DIR . '/?p=login',
-		__('Sign in to your account'),
-		__('Username'),
-		__('Password'),
-		__('Logon')
-	);
+	$title = __('Librarian Login');
+	if (isset($_COOKIE['admin_logged_in']) && $_COOKIE['admin_logged_in'] == 1)
+	{
+		$content = sprintf('<a href="admin/logout.php">%s</a>', __('Logout'));
+	}
+	else
+	{
+		$content = '<form action="%s" method="post">'
+			. '<p><span id="info">%s</span></p>'
+			. '<p>'
+				. '<label for="userName">%s</label>'
+				. '<input type="text" id="userName" name="userName" class="text login" class="text" />'
+			. '</p>'
+			. '<p>'
+				. '<label for="passWord">%s</label>'
+				. '<input type="password" id="passWord" name="passWord" class="text login" class="text" />'
+			. '</p>'
+			. '<p><input type="submit" name="logMeIn" value="%s" id="loginButton" class="text button" /></p>'
+		. '</form>';
+		$content = sprintf($content,
+			SENAYAN_WEB_ROOT_DIR . '/?p=login',
+			__('Sign in to your account'),
+			__('Username'),
+			__('Password'),
+			__('Logon')
+		);
+	}
 
 	$block = array(
 		'title' => __('Librarian Login'),
