@@ -37,17 +37,20 @@ $main_links_items = variable_get('main_links_items', 'top');
 
 $links_type = array('top' => __('Top items only'), 'full' => __('All items'));
 
-require(SENAYAN_BASE_DIR . 'template/fatin/php/function.php');
-$list_avtheme = list_avtheme();
 $opt_opac_theme = '';
-foreach ($list_avtheme as $theme_dir => $theme_name)
+if (file_exists(SENAYAN_BASE_DIR . 'template/fatin/php/function.php'))
 {
-	$selected = ($opac_theme == $theme_dir) ? 'selected' : '';
-	$opt_opac_theme .= sprintf('<option value="%s" %s>%s</option>',
-		$theme_dir,
-		$selected,
-		$theme_name
-	);
+	require(SENAYAN_BASE_DIR . 'template/fatin/php/function.php');
+	$list_avtheme = list_avtheme();
+	foreach ($list_avtheme as $theme_dir => $theme_name)
+	{
+		$selected = ($opac_theme == $theme_dir) ? 'selected' : '';
+		$opt_opac_theme .= sprintf('<option value="%s" %s>%s</option>',
+			$theme_dir,
+			$selected,
+			$theme_name
+		);
+	}
 }
 
 $dir_ui_theme = __DIR__ . '/../library/ui/css/';
@@ -111,6 +114,10 @@ foreach ($links_type as $key => $val)
 				<span><?php echo __('Separate IP addresses with space');?></span>
 			</td>
 		</tr>
+<?php
+	if ($opt_opac_theme != ''):
+?>
+
 		<tr valign=top>
 			<th colspan="4">OPAC</th>
 		</tr>
@@ -141,6 +148,10 @@ foreach ($links_type as $key => $val)
 				<span><?php echo __('Select jQuery-UI Theme to use in OPAC.');?></span>
 			</td>
 		</tr>
+<?php
+	endif;
+?>
+
 		<tr valign=top>
 			<th colspan="4">jQuery-UI</th>
 		</tr>
@@ -175,7 +186,7 @@ foreach ($links_type as $key => $val)
 			</td>
 		</tr>
 		<tr valign="top">
-			<td class="alterCell" style="font-weight: bold;"><label for="main_links_items" style="cursor: pointer;"><?php echo __('Main Links Itema');?></label></td>
+			<td class="alterCell" style="font-weight: bold;"><label for="main_links_items" style="cursor: pointer;"><?php echo __('Main Links Items');?></label></td>
 			<td class="alterCell" style="font-weight: bold; width: 1%;">:</td>
 			<td class="alterCell2">
 				<select id="main_links_items" name="main_links_items"><?php echo $opt_main_links_items;?></select>
